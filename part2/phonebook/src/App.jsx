@@ -6,7 +6,7 @@ import Persons from "./components/Persons";
 import Notification from "./components/Notification";
 
 const App = () => {
-    const [persons, setPersons] = useState([]);
+    const [persons, setPersons] = useState(null);
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [newFilter, setNewFilter] = useState("");
@@ -62,6 +62,8 @@ const App = () => {
             }
         };
     };
+
+    if (persons === null) return null;
 
     return (
         <div>
