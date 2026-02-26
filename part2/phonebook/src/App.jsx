@@ -10,15 +10,25 @@ const App = () => {
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [newFilter, setNewFilter] = useState("");
-    const [notification, setNotification] = useState(null);
+    const [notification, setNotification] = useState({
+        text: null,
+        isError: false,
+    });
 
     useEffect(() => {
         personService.getAll().then((data) => setPersons(data));
     }, []);
 
     useEffect(() => {
-        if (notification === null) return;
-        setTimeout(() => setNotification(null), 4000);
+        if (notification.text === null) return;
+        setTimeout(
+            () =>
+                setNotification({
+                    text: null,
+                    isError: false,
+                }),
+            4000,
+        );
     }, [notification]);
 
     const deleteUser = (id) => {
@@ -28,15 +38,22 @@ const App = () => {
                 personService
                     .deleteById(id)
                     .then(() => {
-                        setNotification(`Deleted person by id ${id}`);
+                        setNotification({
+                            text: `Deleted person by id ${id}`,
+                            isError: false,
+                        });
                         setPersons(
-                            persons.filter((person) => person.id !== id)
+                            persons.filter((person) => person.id !== id),
                         );
                     })
                     .catch((err) => {
                         if (err.status === 404) {
-                            setNotification(
-                                `Person with id ${id} has already been deleted`
+                            setNotification({
+                                text: `Person with id ${id} has already been deleted`,
+                                isError: true,
+                            });
+                            setPersons(
+                                persons.filter((person) => person.id !== id),
                             );
                             return;
                         }
@@ -49,7 +66,10 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={notification} />
+            <Notification
+                message={notification.text}
+                isError={notification.isError}
+            />
             <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
             <h2>add a new</h2>
             <PersonForm
