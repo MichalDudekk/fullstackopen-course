@@ -47,7 +47,13 @@ const App = () => {
                 ) : countries.length > 1 ? (
                     countries.map((country) => (
                         <div key={country.ccn3}>
-                            {country.name.common} <br />
+                            {country.name.common}{" "}
+                            <button
+                                onClick={() => setSearch(country.name.common)}
+                            >
+                                Show
+                            </button>{" "}
+                            <br />
                         </div>
                     ))
                 ) : countries.length === 0 ? (
