@@ -1,5 +1,5 @@
 {
-    "name": "phonebook",
+    "name": "test",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
@@ -12,7 +12,6 @@
     "description": "",
     "dependencies": {
         "cors": "^2.8.6",
-        "express": "^5.2.1",
-        "morgan": "^1.10.1"
+        "express": "^5.2.1"
     }
 }
