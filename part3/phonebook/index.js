@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 let persons = [
     {
         id: "1",
@@ -38,6 +40,40 @@ app.get("/api/persons/:id", (req, res) => {
         res.statusMessage = `Person id = ${id} not found`;
         res.status(404).end();
     }
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+    const id = req.params.id;
+    persons = persons.filter((person) => person.id !== id);
+
+    res.status(204).end();
+});
+
+app.post("/api/persons", (req, res) => {
+    const name = req.body.name;
+    const number = req.body.number;
+
+    if (!name || !number) {
+        return res.status(400).json({
+            error: "content missing",
+        });
+    }
+
+    if (persons.find((person) => person.name == name)) {
+        return res.status(400).json({
+            error: "name must be unique",
+        });
+    }
+
+    const id = Math.ceil(Math.random() * 1000);
+    const person = {
+        id: id,
+        name: name,
+        number: number,
+    };
+
+    persons = persons.concat(person);
+    res.status(201).send(person);
 });
 
 app.get("/info", (request, result) => {
