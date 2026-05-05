@@ -28,6 +28,25 @@ app.get("/api/persons", (req, res) => {
     res.send(persons);
 });
 
+app.get("/api/persons/:id", (req, res) => {
+    const id = req.params.id;
+    const person = persons.find((person) => person.id === id);
+
+    if (person) {
+        res.send(person);
+    } else {
+        res.statusMessage = `Person id = ${id} not found`;
+        res.status(404).end();
+    }
+});
+
+app.get("/info", (request, result) => {
+    const length = persons.length;
+
+    result.send(`<p>Phonebook has info for ${length} people</p>
+        <p>${Date()}</p>`);
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
