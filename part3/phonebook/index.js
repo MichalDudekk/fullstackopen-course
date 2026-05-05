@@ -1,7 +1,30 @@
 const express = require("express");
+const morgan = require("morgan");
+
 const app = express();
 
 app.use(express.json());
+
+morgan.token("body", function (req, res) {
+    const body = JSON.stringify(req.body);
+    return body || "{}";
+});
+
+app.use(
+    morgan(
+        ":method :url :status :res[content-length] - :response-time ms :body",
+    ),
+);
+
+// const requestLogger = (request, response, next) => {
+//     console.log("Method:", request.method);
+//     console.log("Path:  ", request.path);
+//     console.log("Body:  ", request.body);
+//     console.log("---");
+//     next();
+// };
+
+// app.use(requestLogger);
 
 let persons = [
     {
@@ -82,6 +105,12 @@ app.get("/info", (request, result) => {
     result.send(`<p>Phonebook has info for ${length} people</p>
         <p>${Date()}</p>`);
 });
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
