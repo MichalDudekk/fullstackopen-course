@@ -3,3 +3,6 @@ test.js
 ./test/*
 /test
 ./test/
+
+/part2/countries/.vite
+/part3/test
