@@ -1,0 +1,14 @@
+GET http://localhost:3001/api/notes/
+
+#####
+GET http://localhost:3001/api/notes/69fb88f7c41bde8d25765d7c
+#####
+GET http://localhost:3001/api/notes/69fb88f7c41bde8d25765d7d
+#####
+POST http://localhost:3001/api/notes/
+Content-Type: application/json
+
+{
+    "content": "Daniel is not smart",
+    "important": true
+}
