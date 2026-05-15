@@ -1,4 +1,9 @@
+// index.js
+require("dotenv").config();
 const express = require("express");
+const Note = require("./models/note");
+
+//url = `mongodb+srv://fullstack:${password}@cluster0.tpayaeq.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0`;
 
 const PORT = process.env.PORT || 3001;
 
@@ -30,8 +35,9 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/notes", (request, response) => {
-    // console.log(request.headers);
-    response.json(notes);
+    Note.find({}).then((notes) => {
+        response.json(notes);
+    });
 });
 
 app.get("/api/notes/:id", (request, response) => {
