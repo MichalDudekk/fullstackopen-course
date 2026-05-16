@@ -64,7 +64,10 @@ const PersonForm = (props) => {
                 });
             })
             .catch((error) => {
-                console.log(error);
+                props.setNotification({
+                    text: error.response.data.error,
+                    isError: true,
+                });
             });
     };
 

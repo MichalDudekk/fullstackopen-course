@@ -14,3 +14,13 @@ Content-Type: application/json
 {
     "name": "Dalmian"
 }
+
+##### ERROR
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Da",
+    "number": "420-345-567" 
+}

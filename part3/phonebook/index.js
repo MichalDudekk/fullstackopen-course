@@ -63,24 +63,21 @@ app.delete("/api/persons/:id", (req, res, next) => {
         });
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
     const name = req.body.name;
     const number = req.body.number;
-
-    if (!name || !number) {
-        return res.status(400).json({
-            error: "content missing",
-        });
-    }
 
     const person = new Person({
         name: name,
         number: number,
     });
 
-    person.save().then((savedPerson) => {
-        res.json(savedPerson);
-    });
+    person
+        .save()
+        .then((savedPerson) => {
+            res.json(savedPerson);
+        })
+        .catch((error) => next(error));
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
@@ -123,6 +120,8 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === "CastError") {
         return response.status(400).send({ error: "malformatted id" });
+    } else if (error.name === "ValidationError") {
+        return response.status(400).json({ error: error.message });
     }
 
     next(error);
