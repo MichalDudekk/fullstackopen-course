@@ -43,8 +43,13 @@ const PersonForm = (props) => {
                                 ),
                             );
                             return;
+                        } else {
+                            console.log(err);
+                            props.setNotification({
+                                text: err.response.data.error,
+                                isError: true,
+                            });
                         }
-                        console.log(err);
                     });
             }
 

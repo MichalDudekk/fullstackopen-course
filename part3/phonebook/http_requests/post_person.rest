@@ -7,7 +7,6 @@ Content-Type: application/json
 }
 
 ##### ERROR
-
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
@@ -16,7 +15,6 @@ Content-Type: application/json
 }
 
 ##### ERROR
-
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
@@ -26,11 +24,10 @@ Content-Type: application/json
 }
 
 ##### ERROR
-
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Da",
-    "number": "420-345567" 
+    "name": "Dauniela",
+    "number": "4-1235678" 
 }
