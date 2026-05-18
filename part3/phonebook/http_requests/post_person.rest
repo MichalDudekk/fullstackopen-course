@@ -1,0 +1,33 @@
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Damian",
+    "number": "420-345-567" 
+}
+
+##### ERROR
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Dalmian"
+}
+
+##### ERROR
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Da",
+    "number": "420-345567" 
+}
+
+##### ERROR
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Dauniela",
+    "number": "4-1235678" 
+}

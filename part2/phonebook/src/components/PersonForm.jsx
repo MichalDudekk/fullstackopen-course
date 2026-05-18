@@ -43,8 +43,13 @@ const PersonForm = (props) => {
                                 ),
                             );
                             return;
+                        } else {
+                            console.log(err);
+                            props.setNotification({
+                                text: err.response.data.error,
+                                isError: true,
+                            });
                         }
-                        console.log(err);
                     });
             }
 
@@ -64,7 +69,10 @@ const PersonForm = (props) => {
                 });
             })
             .catch((error) => {
-                console.log(error);
+                props.setNotification({
+                    text: error.response.data.error,
+                    isError: true,
+                });
             });
     };
 

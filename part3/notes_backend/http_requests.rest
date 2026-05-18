@@ -1,0 +1,27 @@
+##### GET ALL
+GET http://localhost:3001/api/notes/
+##### GET BY ID
+GET http://localhost:3001/api/notes/69fb88f7c41bde8d25765d7c
+##### GET BY ID - ERROR - 404
+GET http://localhost:3001/api/notes/69fb88f7c41bde8d25765d7d
+##### GET BY ID - ERROR - invalid format
+GET http://localhost:3001/api/notes/invalidId
+##### POST
+POST http://localhost:3001/api/notes/
+Content-Type: application/json
+
+{
+    "content": "Daniel is not smart",
+    "important": true
+}
+
+##### DELETE BY ID
+DELETE http://localhost:3001/api/notes/6a078220405053434dba351e
+##### PUT BY ID
+PUT http://localhost:3001/api/notes/69fb88f7c41bde8d25765d7c
+Content-Type: application/json
+
+{
+    "content": "a note",
+    "important": true
+}
