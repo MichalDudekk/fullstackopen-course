@@ -1,26 +1,26 @@
 // index.js
-require("dotenv").config();
-const Note = require("./models/note");
-const express = require("express");
+require('dotenv').config();
+const Note = require('./models/note');
+const express = require('express');
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 
 app.use(express.json());
-app.use(express.static("dist"));
+app.use(express.static('dist'));
 
-app.get("/", (request, response) => {
-    response.send("<h1>Hello World!</h1>");
+app.get('/', (request, response) => {
+    response.send('<h1>Hello World!</h1>');
 });
 
-app.get("/api/notes", (request, response) => {
+app.get('/api/notes', (request, response) => {
     Note.find({}).then((notes) => {
         response.json(notes);
     });
 });
 
-app.get("/api/notes/:id", (request, response, next) => {
+app.get('/api/notes/:id', (request, response, next) => {
     Note.findById(request.params.id)
         .then((note) => {
             if (note) {
@@ -33,15 +33,15 @@ app.get("/api/notes/:id", (request, response, next) => {
         .catch((error) => next(error));
 });
 
-app.delete("/api/notes/:id", (request, response, next) => {
+app.delete('/api/notes/:id', (request, response, next) => {
     Note.findByIdAndDelete(request.params.id)
-        .then((result) => {
+        .then((_result) => {
             response.status(204).end();
         })
         .catch((error) => next(error));
 });
 
-app.post("/api/notes", (request, response, next) => {
+app.post('/api/notes', (request, response, next) => {
     const body = request.body;
 
     const note = new Note({
@@ -56,7 +56,7 @@ app.post("/api/notes", (request, response, next) => {
         .catch((error) => next(error));
 });
 
-app.put("/api/notes/:id", (request, response, next) => {
+app.put('/api/notes/:id', (request, response, next) => {
     const { content, important } = request.body;
 
     Note.findById(request.params.id)
@@ -76,7 +76,7 @@ app.put("/api/notes/:id", (request, response, next) => {
 });
 
 const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: "unknown endpoint" });
+    response.status(404).send({ error: 'unknown endpoint' });
 };
 
 app.use(unknownEndpoint);
@@ -86,9 +86,9 @@ app.use(unknownEndpoint);
 const errorHandler = (error, request, response, next) => {
     console.error(error.message);
 
-    if (error.name === "CastError") {
-        return response.status(400).send({ error: "malformatted id" });
-    } else if (error.name === "ValidationError") {
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' });
+    } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message });
     }
 
