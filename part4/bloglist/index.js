@@ -1,17 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { PORT, MONGODB_URI } = require('./utils/config.js');
+const Blog = require('./models/blog.js');
 
 const app = express();
-
-const blogSchema = mongoose.Schema({
-    title: String,
-    author: String,
-    url: String,
-    likes: Number,
-});
-
-const Blog = mongoose.model('Blog', blogSchema);
 
 console.log(`connecting to: ${MONGODB_URI}`);
 mongoose
