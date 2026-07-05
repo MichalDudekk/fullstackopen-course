@@ -47,6 +47,14 @@ describe('Blog api', () => {
             );
         });
     });
+
+    test('New note with no likes property gets likes: 0 by default', async () => {
+        const response = await api
+            .post('/api/blogs')
+            .send(helper.noteWithNoLikes)
+            .expect(201);
+        assert.strictEqual(response.body.likes, 0);
+    });
 });
 
 after(async () => {
