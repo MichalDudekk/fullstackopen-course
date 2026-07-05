@@ -78,6 +78,27 @@ describe('Blog api', () => {
 
         assert(!ids.includes(blogId));
     });
+
+    test('Updating a blog returns code 200', async () => {
+        const blogsAtStart = await helper.blogsInDb();
+        const blogId = blogsAtStart[0].id;
+
+        const updatedData = {
+            title: 'updated',
+            author: 'updated',
+            url: 'updated',
+            likes: 15,
+        };
+
+        await api.put(`/api/blogs/${blogId}`).send(updatedData).expect(200);
+
+        const response = await api.get(`/api/blogs/${blogId}`).expect(200);
+
+        assert.deepStrictEqual(response.body, {
+            id: blogId,
+            ...updatedData,
+        });
+    });
 });
 
 after(async () => {
