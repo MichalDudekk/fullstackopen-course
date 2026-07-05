@@ -48,12 +48,23 @@ describe('Blog api', () => {
         });
     });
 
-    test('New note with no likes property gets likes: 0 by default', async () => {
+    test('New blog with no likes property gets likes: 0 by default', async () => {
         const response = await api
             .post('/api/blogs')
             .send(helper.noteWithNoLikes)
             .expect(201);
         assert.strictEqual(response.body.likes, 0);
+    });
+
+    test('New blog with no title or url returns code 400', async () => {
+        const blog = helper.initialBlogs[0];
+        const { url, ...blogWithoutUrl } = blog;
+        const { title, ...blogWithoutTitle } = blog;
+        const { url: url2, title: title2, ...blogWithoutBoth } = blog;
+
+        await api.post('/api/blogs').send(blogWithoutUrl).expect(400);
+        await api.post('/api/blogs').send(blogWithoutTitle).expect(400);
+        await api.post('/api/blogs').send(blogWithoutBoth).expect(400);
     });
 });
 
