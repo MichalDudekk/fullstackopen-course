@@ -66,6 +66,18 @@ describe('Blog api', () => {
         await api.post('/api/blogs').send(blogWithoutTitle).expect(400);
         await api.post('/api/blogs').send(blogWithoutBoth).expect(400);
     });
+
+    test('Deleting a blog returns code 204 if id is valid', async () => {
+        const blogsAtStart = await helper.blogsInDb();
+        const blogId = blogsAtStart[0].id;
+
+        await api.delete(`/api/blogs/${blogId}`).expect(204);
+
+        const blogsAfterDelete = await helper.blogsInDb();
+        const ids = blogsAfterDelete.map((blog) => blog.id);
+
+        assert(!ids.includes(blogId));
+    });
 });
 
 after(async () => {
