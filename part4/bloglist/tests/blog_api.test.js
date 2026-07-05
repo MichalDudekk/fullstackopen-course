@@ -22,6 +22,31 @@ describe('Blog api', () => {
 
         assert.strictEqual(response.body.length, helper.initialBlogs.length);
     });
+
+    test('Identifier of the blog posts is named id (not _id)', async () => {
+        const response = await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/);
+
+        assert(
+            response.body.length > 0,
+            'The response array should not be empty',
+        );
+
+        response.body.forEach((blog) => {
+            assert.notStrictEqual(
+                blog.id,
+                undefined,
+                'Blog should have an "id" property',
+            );
+            assert.strictEqual(
+                blog._id,
+                undefined,
+                'Blog should NOT have an "_id" property',
+            );
+        });
+    });
 });
 
 after(async () => {
