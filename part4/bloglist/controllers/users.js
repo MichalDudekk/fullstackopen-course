@@ -1,8 +1,8 @@
 // users.js
 const userRouter = require('express').Router();
-const { request } = require('../app.js');
 const User = require('../models/user.js');
 const bcrypt = require('bcrypt');
+const { error } = require('../utils/logger.js');
 
 userRouter.get('/', async (request, response) => {
     const users = await User.find({});
@@ -11,6 +11,11 @@ userRouter.get('/', async (request, response) => {
 
 userRouter.post('/', async (request, response) => {
     const { username, name, password } = request.body;
+
+    if (password.length < 3)
+        return response
+            .status(400)
+            .json({ error: 'password must be at least 3 characters long' });
 
     const passwordHash = await bcrypt.hash(password, 10);
 
