@@ -6,6 +6,7 @@ const Blog = require('./models/blog.js');
 const blogRouter = require('./controllers/blogs.js');
 const { info, error } = require('./utils/logger.js');
 const middleware = require('./utils/middleware.js');
+const userRouter = require('./controllers/users.js');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.static('dist'));
 app.use(middleware.requestLogger);
 
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', userRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
