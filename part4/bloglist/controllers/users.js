@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const { error } = require('../utils/logger.js');
 
 userRouter.get('/', async (request, response) => {
-    const users = await User.find({});
+    const users = await User.find({}).populate('blogs', { user: 0 });
     response.json(users);
 });
 
@@ -23,6 +23,7 @@ userRouter.post('/', async (request, response) => {
         username: username,
         name: name,
         passwordHash: passwordHash,
+        blogs: [],
     });
 
     const savedUser = await user.save();
