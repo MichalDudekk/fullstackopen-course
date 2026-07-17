@@ -1,6 +1,7 @@
-const app = require('./app'); // the actual Express application
+// index.js
+const app = require('./app.js');
+const logger = require('./utils/logger.js');
 const config = require('./utils/config');
-const logger = require('./utils/logger');
 
 app.listen(config.PORT, () => {
     logger.info(`Server running on port ${config.PORT}`);
