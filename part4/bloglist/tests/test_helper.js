@@ -40,4 +40,20 @@ const blogsInDb = async () => {
     return blogs.map((blog) => blog.toJSON());
 };
 
-module.exports = { initialBlogs, noteWithNoLikes, blogsInDb, nonExistingId };
+const getToken = async (api) => {
+    const response = await api
+        .post('/api/login')
+        .send({ username: 'user1', password: '123' })
+        .expect(200);
+
+    const { token } = response.body;
+    return token;
+};
+
+module.exports = {
+    initialBlogs,
+    noteWithNoLikes,
+    blogsInDb,
+    nonExistingId,
+    getToken,
+};
