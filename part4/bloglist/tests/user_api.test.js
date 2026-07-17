@@ -10,7 +10,8 @@ const api = supertest(app);
 const userData = {
     username: 'user1',
     name: 'user',
-    passwordHash: '123',
+    passwordHash:
+        '$2b$10$h0/BCa6xDxivRonq5GZ/4.tueYCH2gMohFc/KUvPsrkgR/REdZWJ2',
 };
 
 const newUser = {

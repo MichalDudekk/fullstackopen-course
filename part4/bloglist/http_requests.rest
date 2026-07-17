@@ -2,7 +2,7 @@ GET http://localhost:3003/api/blogs
 
 #### POST blogs
 POST http://localhost:3003/api/blogs
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiaWQiOiI2YTU5NTg1ODYzODdlYTRmZjBlODE5ODIiLCJpYXQiOjE3ODQyOTUxNjF9.dwBXE_jtJt9SfTr5eWkKi8qmeP62u65l38rwr5CA2HE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiaWQiOiI2YTVhMzMyMzRjNTJkMjMyMjVjZWY3MTciLCJpYXQiOjE3ODQyOTYzODB9.isvlE3WL8mV7774DNYhtggIYizQjMQaFt_bW_0phqIc
 Content-Type: application/json
 
 {

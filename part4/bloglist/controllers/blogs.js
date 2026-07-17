@@ -37,11 +37,12 @@ blogsRouter.post('/', async (request, response) => {
     const user = await User.findById(decodedToken.id);
 
     const blog = new Blog({ title, author, url, likes, user });
-    user.blogs = user.blogs.concat(blog);
+    const savedBlog = await blog.save();
+
+    user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
 
-    const result = await blog.save();
-    response.status(201).json(result);
+    response.status(201).json(savedBlog);
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
