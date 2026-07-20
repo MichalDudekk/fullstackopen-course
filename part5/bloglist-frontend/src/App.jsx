@@ -5,6 +5,8 @@ import loginService from './services/login';
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
+    const [notification, setNotification] = useState('');
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [user, setUser] = useState(null);
@@ -16,7 +18,6 @@ const App = () => {
     useEffect(() => {
         blogService.getAll().then((blogs) => setBlogs(blogs));
     }, []);
-    console.log(blogs);
 
     useEffect(() => {
         const newUserStringify = window.localStorage.getItem(
@@ -29,6 +30,13 @@ const App = () => {
             blogService.setToken(newUser.token);
         }
     }, []);
+
+    const addNotification = (content, time = 5000) => {
+        setNotification(content);
+        setTimeout(() => {
+            setNotification('');
+        }, time);
+    };
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -46,7 +54,7 @@ const App = () => {
 
             blogService.setToken(newUser.token);
         } catch {
-            alert('Wrong credentials');
+            addNotification('Wrong credentials', 5000);
         }
     };
 
@@ -59,9 +67,9 @@ const App = () => {
             setTitle('');
             setAuthor('');
             setUrl('');
-            alert('poprawnie dodano blog');
+            addNotification('poprawnie dodano blog');
         } catch (e) {
-            alert(e.data);
+            addNotification(e.data);
         }
     };
 
@@ -153,6 +161,9 @@ const App = () => {
 
     return (
         <>
+            <h1>
+                <u>{notification}</u>
+            </h1>
             {!user && loginForm()}
             {user && createNewNote()}
             {user && blogList()}
