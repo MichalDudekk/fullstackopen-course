@@ -9,9 +9,14 @@ const App = () => {
     const [password, setPassword] = useState('');
     const [user, setUser] = useState(null);
 
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [url, setUrl] = useState('');
+
     useEffect(() => {
         blogService.getAll().then((blogs) => setBlogs(blogs));
     }, []);
+    console.log(blogs);
 
     useEffect(() => {
         const newUserStringify = window.localStorage.getItem(
@@ -42,6 +47,21 @@ const App = () => {
             blogService.setToken(newUser.token);
         } catch {
             alert('Wrong credentials');
+        }
+    };
+
+    const handleNewNote = async (event) => {
+        event.preventDefault();
+
+        try {
+            const newBlog = await blogService.postBlog({ title, author, url });
+            setBlogs(blogs.concat(newBlog));
+            setTitle('');
+            setAuthor('');
+            setUrl('');
+            alert('poprawnie dodano blog');
+        } catch (e) {
+            alert(e.data);
         }
     };
 
@@ -92,9 +112,49 @@ const App = () => {
         </div>
     );
 
+    const createNewNote = () => (
+        <>
+            <h2>create new</h2>
+            <form onSubmit={handleNewNote}>
+                <div>
+                    <label>
+                        title:
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={({ target }) => setTitle(target.value)}
+                        />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        author:
+                        <input
+                            type="text"
+                            value={author}
+                            onChange={({ target }) => setAuthor(target.value)}
+                        />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        url:
+                        <input
+                            type="text"
+                            value={url}
+                            onChange={({ target }) => setUrl(target.value)}
+                        />
+                    </label>
+                </div>
+                <button type="submit">create</button>
+            </form>
+        </>
+    );
+
     return (
         <>
             {!user && loginForm()}
+            {user && createNewNote()}
             {user && blogList()}
         </>
     );

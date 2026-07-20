@@ -12,4 +12,17 @@ const getAll = () => {
     return request.then((response) => response.data);
 };
 
-export default { getAll, setToken };
+const postBlog = async (newObject) => {
+    const config = {
+        headers: { Authorization: token },
+    };
+
+    const response = await axios.post(baseUrl, newObject, config);
+
+    // Kontrowersyjne. Po stworzeniu nowego bloga, jego pole user zawiera pełne pole blogs.
+    // np. response.data = {author: ..., id: ..., user: {id: ..., username: ..., name: ..., blogs: [ TUTAJ PEŁNA TABLICA ID ]}}
+    delete response.data.user.blogs;
+    return response.data;
+};
+
+export default { getAll, postBlog, setToken };
