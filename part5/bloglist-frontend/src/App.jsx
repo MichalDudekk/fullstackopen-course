@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import Togglable from './components/Togglable';
+import BlogForm from './components/BlogForm';
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
@@ -10,10 +12,6 @@ const App = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [user, setUser] = useState(null);
-
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
-    const [url, setUrl] = useState('');
 
     useEffect(() => {
         blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -58,15 +56,10 @@ const App = () => {
         }
     };
 
-    const handleNewNote = async (event) => {
-        event.preventDefault();
-
+    const addNewBlog = async (blog) => {
         try {
-            const newBlog = await blogService.postBlog({ title, author, url });
+            const newBlog = await blogService.postBlog(blog);
             setBlogs(blogs.concat(newBlog));
-            setTitle('');
-            setAuthor('');
-            setUrl('');
             addNotification('poprawnie dodano blog');
         } catch (e) {
             addNotification(e.data);
@@ -104,68 +97,43 @@ const App = () => {
 
     const blogList = () => (
         <div>
-            {`${user.name} is logged in`}
-            <h2>blogs</h2>{' '}
-            <button
-                onClick={() => {
-                    setUser(null);
-                    window.localStorage.removeItem('blogsAppLoggedInUser');
-                }}
-            >
-                logout
-            </button>
             {blogs.map((blog) => (
                 <Blog key={blog.id} blog={blog} />
             ))}
         </div>
     );
 
-    const createNewNote = () => (
-        <>
-            <h2>create new</h2>
-            <form onSubmit={handleNewNote}>
-                <div>
-                    <label>
-                        title:
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={({ target }) => setTitle(target.value)}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        author:
-                        <input
-                            type="text"
-                            value={author}
-                            onChange={({ target }) => setAuthor(target.value)}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        url:
-                        <input
-                            type="text"
-                            value={url}
-                            onChange={({ target }) => setUrl(target.value)}
-                        />
-                    </label>
-                </div>
-                <button type="submit">create</button>
-            </form>
-        </>
+    const blogForm = () => (
+        <Togglable buttonLabel="create new note">
+            <BlogForm addNewBlog={addNewBlog} />
+        </Togglable>
+    );
+
+    const logoutButton = () => (
+        <button
+            onClick={() => {
+                setUser(null);
+                window.localStorage.removeItem('blogsAppLoggedInUser');
+            }}
+        >
+            logout
+        </button>
     );
 
     return (
         <>
+            <h2>blogs</h2>
             <h1>
                 <u>{notification}</u>
             </h1>
             {!user && loginForm()}
-            {user && createNewNote()}
+            {user && (
+                <p>
+                    {user.name} is logged in {logoutButton()}
+                </p>
+            )}
+
+            {user && blogForm()}
             {user && blogList()}
         </>
     );
