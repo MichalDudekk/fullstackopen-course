@@ -69,7 +69,7 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
         });
     }
 
-    const newUser = await User.findById(user.id);
+    const newUser = await User.findById(user);
 
     blog.title = title;
     blog.url = url;

@@ -30,6 +30,7 @@ const Blog = ({ blog, handleLike }) => {
                     <br />
                     {blog.author}
                     <br />
+                    {/* {console.log(blog.user)} */}
                 </div>
             )}
         </div>

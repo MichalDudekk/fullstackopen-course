@@ -70,6 +70,7 @@ const App = () => {
         try {
             const updatedBlog = await blogService.putBlog({
                 ...blog,
+                user: blog.user.id,
                 likes: blog.likes + 1,
             });
             setBlogs(

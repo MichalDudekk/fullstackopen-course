@@ -126,11 +126,7 @@ describe('Blog api', () => {
             author: 'updated',
             url: 'updated',
             likes: 15,
-            user: {
-                username: user.username,
-                name: user.name,
-                id: user._id,
-            },
+            user: user._id,
         };
 
         await api
@@ -144,7 +140,7 @@ describe('Blog api', () => {
         assert.deepStrictEqual(response.body, {
             ...updatedData,
             id: blogId,
-            user: updatedData.user.id.toString(),
+            user: updatedData.user.toString(),
         });
     });
 });
