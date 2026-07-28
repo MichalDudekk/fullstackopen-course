@@ -86,6 +86,21 @@ const App = () => {
         }
     };
 
+    const handleRemoveBlog = async (blog) => {
+        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+            try {
+                await blogService.deleteBlog(blog);
+
+                setBlogs(
+                    blogs.filter((singleBlog) => singleBlog.id !== blog.id),
+                );
+                addNotification('usunieto bloga');
+            } catch (e) {
+                addNotification(e.data);
+            }
+        }
+    };
+
     const loginForm = () => (
         <>
             <h2>Log in to application</h2>
@@ -122,6 +137,8 @@ const App = () => {
                     key={blog.id}
                     blog={blog}
                     handleLike={() => handleLike(blog)}
+                    user={user}
+                    handleRemoveBlog={() => handleRemoveBlog(blog)}
                 />
             ))}
         </div>
