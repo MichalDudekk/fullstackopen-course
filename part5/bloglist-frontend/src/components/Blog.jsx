@@ -28,9 +28,8 @@ const Blog = ({ blog, handleLike }) => {
                     likes {blog.likes}{' '}
                     <button onClick={handleLike}>like</button>
                     <br />
-                    {blog.author}
+                    {blog.user.name}
                     <br />
-                    {/* {console.log(blog.user)} */}
                 </div>
             )}
         </div>
