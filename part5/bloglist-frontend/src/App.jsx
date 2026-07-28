@@ -66,6 +66,23 @@ const App = () => {
         }
     };
 
+    const handleLike = async (blog) => {
+        try {
+            const updatedBlog = await blogService.putBlog({
+                ...blog,
+                likes: blog.likes + 1,
+            });
+            setBlogs(
+                blogs.map((blog) =>
+                    blog.id !== updatedBlog.id ? blog : updatedBlog,
+                ),
+            );
+            addNotification('dodano like');
+        } catch (e) {
+            addNotification(e.data);
+        }
+    };
+
     const loginForm = () => (
         <>
             <h2>Log in to application</h2>
@@ -98,7 +115,11 @@ const App = () => {
     const blogList = () => (
         <div>
             {blogs.map((blog) => (
-                <Blog key={blog.id} blog={blog} />
+                <Blog
+                    key={blog.id}
+                    blog={blog}
+                    handleLike={() => handleLike(blog)}
+                />
             ))}
         </div>
     );
