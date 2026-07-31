@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
 
 describe('<Blog />', () => {
@@ -8,6 +9,10 @@ describe('<Blog />', () => {
             author: 'Ivan Ivanovic',
             likes: 5,
             url: 'https://blog.ai',
+            user: {
+                username: 'MJ',
+                name: 'Mike',
+            },
         };
 
         const primitiveUser = { username: 'Neandertalis' };
@@ -35,5 +40,21 @@ describe('<Blog />', () => {
         expect(author).toBeVisible();
         expect(likes).toBeNull();
         expect(url).toBeNull();
+    });
+
+    test('URL and likes are visible after clicking the button', async () => {
+        // given
+        const user = userEvent.setup();
+        const button = screen.getByText('view');
+
+        // when
+        await user.click(button);
+
+        // then
+        const url = screen.getByText('https://blog.ai');
+        const likes = screen.getByText('likes 5');
+
+        expect(url).toBeVisible();
+        expect(likes).toBeVisible();
     });
 });
