@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
 
+let handleLike;
+
 describe('<Blog />', () => {
     beforeEach(() => {
         const blog = {
@@ -17,7 +19,7 @@ describe('<Blog />', () => {
 
         const primitiveUser = { username: 'Neandertalis' };
 
-        const handleLike = vi.fn();
+        handleLike = vi.fn();
         const handleRemoveBlog = vi.fn();
 
         render(
@@ -56,5 +58,20 @@ describe('<Blog />', () => {
 
         expect(url).toBeVisible();
         expect(likes).toBeVisible();
+    });
+
+    test('Clicking like button twice calls handleLike exacly twice', async () => {
+        // given
+        const user = userEvent.setup();
+        const button = screen.getByText('view');
+        await user.click(button);
+        const likeButton = screen.getByText('like');
+
+        // when
+        await user.click(likeButton);
+        await user.click(likeButton);
+
+        // then
+        expect(handleLike.mock.calls).toHaveLength(2);
     });
 });
