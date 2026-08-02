@@ -12,4 +12,18 @@ describe('Note app', () => {
             ),
         ).toBeVisible();
     });
+
+    test('user can log in', async ({ page }) => {
+        await page.goto('http://localhost:5173');
+
+        await page.getByRole('button', { name: 'login' }).click();
+        await page.getByLabel('username').fill('mluukkai');
+        await page.getByLabel('password').fill('salainen');
+
+        await page.getByRole('button', { name: 'login' }).click();
+
+        await expect(
+            page.getByText('Matti Luukkainen logged in'),
+        ).toBeVisible();
+    });
 });
