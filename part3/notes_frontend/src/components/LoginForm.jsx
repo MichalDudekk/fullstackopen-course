@@ -29,9 +29,7 @@ const LoginForm = ({
                         />
                     </label>
                 </div>
-                <button type="submit" name="login">
-                    log in
-                </button>
+                <button type="submit">login</button>
             </form>
         </div>
     );
