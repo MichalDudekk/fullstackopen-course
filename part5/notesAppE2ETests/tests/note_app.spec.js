@@ -3,8 +3,8 @@ const { createNote, loginWith } = require('./helper');
 
 describe('Note app', () => {
     beforeEach(async ({ page, request }) => {
-        await request.post('http://localhost:3001/api/testing/reset');
-        await request.post('http://localhost:3001/api/users', {
+        await request.post('/api/testing/reset');
+        await request.post('/api/users', {
             data: {
                 name: 'Matti Luukkainen',
                 username: 'mluukkai',
@@ -12,7 +12,7 @@ describe('Note app', () => {
             },
         });
 
-        await page.goto('http://localhost:5173');
+        await page.goto('/');
     });
 
     test('Front page can be opened', async ({ page }) => {
@@ -69,6 +69,28 @@ describe('Note app', () => {
                     .getByRole('button', { name: 'make not important' })
                     .click();
                 await expect(page.getByText('make important')).toBeVisible();
+            });
+        });
+
+        describe('and several notes exists', () => {
+            beforeEach(async ({ page }) => {
+                await createNote(page, 'first note');
+                await createNote(page, 'second note');
+                await createNote(page, 'third note');
+            });
+
+            test('one of those can be made nonimportant', async ({ page }) => {
+                const otherNoteText = page.getByText('second note');
+                const otherNoteElement = otherNoteText.locator('..');
+
+                await page.pause();
+                await otherNoteElement
+                    .getByRole('button', { name: 'make not important' })
+                    .click();
+                await page.pause();
+                await expect(
+                    otherNoteElement.getByText('make important'),
+                ).toBeVisible();
             });
         });
     });
