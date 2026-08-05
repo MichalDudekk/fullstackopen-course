@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test');
+const { loginWith, addNewBlog } = require('./helper');
 
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
@@ -25,13 +26,7 @@ describe('Blog app', () => {
 
     describe('Login', () => {
         test('succeeds with correct credentials', async ({ page }) => {
-            await page.getByLabel('username').fill('jejek');
-            await page.getByLabel('password').fill('kejej123');
-            const loginButton = await page
-                .getByRole('button', {
-                    name: 'login',
-                })
-                .click();
+            await loginWith(page, 'jejek', 'kejej123');
 
             expect(
                 await page.getByText('Andrzej Jejkowski is logged in'),
@@ -39,15 +34,26 @@ describe('Blog app', () => {
         });
 
         test('fails with wrong credentials', async ({ page }) => {
-            await page.getByLabel('username').fill('user');
-            await page.getByLabel('password').fill('user123');
-            const loginButton = await page
-                .getByRole('button', {
-                    name: 'login',
-                })
-                .click();
+            await loginWith(page, 'user', 'user123');
 
             expect(await page.getByText('wrong credentials')).toBeVisible();
+        });
+    });
+
+    describe('When logged in', () => {
+        beforeEach(async ({ page }) => {
+            await loginWith(page, 'jejek', 'kejej123');
+        });
+
+        test('a new blog can be created', async ({ page }) => {
+            await addNewBlog(
+                page,
+                'Lord of the rings',
+                'LOTR.com',
+                'JRR Tolkien',
+            );
+
+            expect(await page.getByText('Lord of the rings')).toBeVisible();
         });
     });
 });
