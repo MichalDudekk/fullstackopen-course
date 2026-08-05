@@ -1,13 +1,14 @@
 // app.js
 const express = require('express');
 const mongoose = require('mongoose');
-const { PORT, MONGODB_URI } = require('./utils/config.js');
+const { PORT, MONGODB_URI, NODE_ENV } = require('./utils/config.js');
 const Blog = require('./models/blog.js');
 const blogRouter = require('./controllers/blogs.js');
 const { info, error } = require('./utils/logger.js');
 const middleware = require('./utils/middleware.js');
 const userRouter = require('./controllers/users.js');
 const loginRouter = require('./controllers/login.js');
+const testingRouter = require('./controllers/testing.js');
 
 const app = express();
 
@@ -25,6 +26,10 @@ app.use(middleware.tokenExtractor);
 app.use('/api/login', loginRouter);
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
+
+if (NODE_ENV === 'test') {
+    app.use('/api/test', testingRouter);
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
