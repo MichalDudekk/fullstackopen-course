@@ -3,7 +3,6 @@ import { Routes, Route, Link, useMatch } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import blogService from './services/blogs';
-import Togglable from './components/Togglable';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 
@@ -44,6 +43,11 @@ const App = () => {
     };
 
     const addNewBlog = async (blog) => {
+        if (!user) {
+            addNotification('you have to be logged in');
+            return;
+        }
+
         try {
             const newBlog = await blogService.postBlog(blog);
             setBlogs(blogs.concat(newBlog));
@@ -95,12 +99,6 @@ const App = () => {
         padding: 5,
     };
 
-    const blogForm = () => (
-        <Togglable buttonLabel="create new note">
-            <BlogForm addNewBlog={addNewBlog} />
-        </Togglable>
-    );
-
     const logoutButton = () => (
         <button
             onClick={() => {
@@ -118,6 +116,11 @@ const App = () => {
                 <Link style={padding} to="/">
                     blogs
                 </Link>
+                {user && (
+                    <Link style={padding} to="/create">
+                        new blog
+                    </Link>
+                )}
                 {!user ? (
                     <Link style={padding} to="/login">
                         login
@@ -140,7 +143,10 @@ const App = () => {
                     }
                 />
                 <Route path="/" element={<BlogList blogs={blogs} />} />
-
+                <Route
+                    path="/create"
+                    element={<BlogForm addNewBlog={addNewBlog} />}
+                />
                 <Route
                     path="/blogs/:id"
                     element={
@@ -153,16 +159,6 @@ const App = () => {
                     }
                 />
             </Routes>
-            {/* 
-            
-            {user && (
-                <p>
-                    {user.name} is logged in {logoutButton()}
-                </p>
-            )}
-
-            {user && blogForm()}
-            {user && blogList()} */}
         </>
     );
 };
