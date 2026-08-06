@@ -113,5 +113,51 @@ describe('Blog app', () => {
                 ).not.toBeVisible();
             });
         });
+
+        describe('several notes exist', () => {
+            beforeEach(async ({ page, request }) => {
+                // multi session sollution
+                const response = await request.post('/api/login', {
+                    data: { username: 'jejek', password: 'kejej123' },
+                });
+                const token = (await response.json()).token;
+
+                for (let i = 0; i < 5; i++) {
+                    const res = await request.post('/api/blogs', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        data: {
+                            title: `Blog${i}`,
+                            url: 'LOTR.com',
+                            author: 'JRR Tolkien',
+                            likes: `${i + 1}`,
+                        },
+                    });
+                }
+
+                await page.evaluate(() => localStorage.clear());
+
+                // Ponowne wejście na stronę od zera
+                await page.goto('/');
+                await loginWith(page, 'jejek', 'kejej123');
+            });
+
+            test('blogs are sorted by likes', async ({ page }) => {
+                await expect(page.getByText(/Blog\d+/).first()).toBeVisible();
+                const titles = await page.getByText(/Blog\d+.*/).all();
+                const blogs = titles.map((title) => title.locator('../..'));
+
+                await expect(
+                    page.getByText('Andrzej Jejkowski is logged in'),
+                ).toBeVisible();
+
+                await expect(blogs[0].getByText('Blog4')).toBeVisible();
+                await expect(blogs[1].getByText('Blog3')).toBeVisible();
+                await expect(blogs[2].getByText('Blog2')).toBeVisible();
+                await expect(blogs[3].getByText('Blog1')).toBeVisible();
+                await expect(blogs[4].getByText('Blog0')).toBeVisible();
+            });
+        });
     });
 });
