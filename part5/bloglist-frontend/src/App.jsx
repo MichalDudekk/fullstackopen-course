@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-
+import { Routes, Route, Link, useMatch } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import blogService from './services/blogs';
 import Togglable from './components/Togglable';
+import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 
 const App = () => {
@@ -31,6 +31,11 @@ const App = () => {
         }
     }, []);
 
+    const match = useMatch('/blogs/:id');
+    const blog = match
+        ? blogs.find((note) => note.id === match.params.id)
+        : null;
+
     const addNotification = (content, time = 5000) => {
         setNotification(content);
         setTimeout(() => {
@@ -49,6 +54,11 @@ const App = () => {
     };
 
     const handleLike = async (blog) => {
+        if (!user) {
+            addNotification('you have to be logged in');
+            return;
+        }
+
         try {
             const updatedBlog = await blogService.putBlog({
                 ...blog,
@@ -129,14 +139,16 @@ const App = () => {
                         />
                     }
                 />
+                <Route path="/" element={<BlogList blogs={blogs} />} />
+
                 <Route
-                    path="/"
+                    path="/blogs/:id"
                     element={
-                        <BlogList
-                            addNotification={addNotification}
+                        <Blog
+                            blog={blog}
                             user={user}
-                            blogs={blogs}
-                            setBlogs={setBlogs}
+                            handleLike={() => handleLike(blog)}
+                            handleRemoveBlog={() => handleRemoveBlog(blog)}
                         />
                     }
                 />

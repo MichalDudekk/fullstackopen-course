@@ -1,39 +1,35 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Blog = ({ blog, handleLike, user, handleRemoveBlog }) => {
-    const blogStyle = {
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: 'solid',
-        borderWidth: 1,
-        marginBottom: 5,
+    const navigate = useNavigate();
+
+    const removeBlog = () => {
+        handleRemoveBlog();
+        navigate('/');
     };
 
-    const [visible, setVisible] = useState(false);
-
-    const toggleVisibility = () => setVisible(!visible);
+    if (!blog) {
+        return null;
+    }
 
     return (
-        <div style={blogStyle}>
-            <div>
-                <span>{blog.title}</span> <span>{blog.author}</span>
-                <button onClick={toggleVisibility}>
-                    {visible ? 'hide' : 'view'}
-                </button>
-            </div>
-            {visible && (
-                <div>
-                    <span>{blog.url}</span>
-                    <br />
-                    <span>likes {blog.likes} </span>
-                    <button onClick={handleLike}>like</button>
-                    <br />
-                    {blog.user.name}
-                    <br />
-                    {user.username === blog.user.username && (
-                        <button onClick={handleRemoveBlog}>remove</button>
-                    )}
-                </div>
+        <div>
+            <h3>{blog.title}</h3>
+            <span>
+                <a href="https://fullstackopen.com/" target="_blanc">
+                    {blog.url}
+                </a>
+            </span>
+            <br />
+            <span>{blog.author}</span>
+            <br />
+            <span>likes {blog.likes} </span>
+            {user && <button onClick={handleLike}>like</button>}
+            <br />
+            <span>Added by {blog.user.name}</span>
+            <br />
+            {user && user.username === blog.user.username && (
+                <button onClick={removeBlog}>remove</button>
             )}
         </div>
     );

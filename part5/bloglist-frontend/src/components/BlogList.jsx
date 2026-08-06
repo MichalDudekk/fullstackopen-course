@@ -1,23 +1,16 @@
-import Blog from './Blog';
+import { Link } from 'react-router-dom';
 
-const BlogList = ({ addNotification, blogs, setBlogs, user }) => {
-    const handleLike = () => {};
-    const handleRemoveBlog = () => {};
-
+const BlogList = ({ blogs }) => {
     return (
         <>
             <h2>blogs</h2>
-            <div>
+            <ul>
                 {blogs.map((blog) => (
-                    <Blog
-                        key={blog.id}
-                        blog={blog}
-                        handleLike={() => handleLike(blog)}
-                        user={user}
-                        handleRemoveBlog={() => handleRemoveBlog(blog)}
-                    />
+                    <li key={blog.id}>
+                        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                    </li>
                 ))}
-            </div>
+            </ul>
         </>
     );
 };
