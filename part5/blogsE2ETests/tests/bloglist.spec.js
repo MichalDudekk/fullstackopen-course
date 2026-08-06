@@ -92,6 +92,26 @@ describe('Blog app', () => {
                 ).not.toBeVisible();
                 await expect(page.getByText('usunieto bloga')).toBeVisible();
             });
+
+            test("other user can't see remove button", async ({
+                page,
+                request,
+            }) => {
+                await request.post('/api/users', {
+                    data: {
+                        name: 'Ivan',
+                        username: 'ivan',
+                        password: 'Qwerty123',
+                    },
+                });
+
+                await page.getByRole('button', { name: 'logout' }).click();
+                await loginWith(page, 'ivan', 'Qwerty123');
+                await page.getByRole('button', { name: 'view' }).click();
+                await expect(
+                    page.getByRole('button', { name: 'remove' }),
+                ).not.toBeVisible();
+            });
         });
     });
 });
