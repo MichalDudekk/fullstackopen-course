@@ -73,6 +73,25 @@ describe('Blog app', () => {
                 await page.getByRole('button', { name: 'like' }).click();
                 await expect(page.getByText('likes 2 ')).toBeVisible();
             });
+
+            test('user who added a blog can delete it', async ({ page }) => {
+                await page.getByRole('button', { name: 'view' }).click();
+                const removeButton = page.getByRole('button', {
+                    name: 'remove',
+                });
+                await expect(removeButton).toBeVisible();
+
+                page.once('dialog', async (dialog) => {
+                    expect(dialog.type()).toBe('confirm');
+                    await dialog.accept();
+                });
+
+                await removeButton.click();
+                await expect(
+                    page.getByText('Lord of the rings'),
+                ).not.toBeVisible();
+                await expect(page.getByText('usunieto bloga')).toBeVisible();
+            });
         });
     });
 });
