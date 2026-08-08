@@ -16,6 +16,8 @@ describe('Blog app', () => {
     });
 
     test('Login form is shown', async ({ page }) => {
+        await page.getByText('login').click();
+
         const usernameInput = page.getByLabel('username');
         const passwordInput = page.getByLabel('password');
         const loginButton = page.getByRole('button', { name: 'login' });
@@ -29,7 +31,7 @@ describe('Blog app', () => {
             await loginWith(page, 'jejek', 'kejej123');
 
             await expect(
-                page.getByText('Andrzej Jejkowski is logged in'),
+                page.getByRole('button', { name: 'logout' }),
             ).toBeVisible();
         });
 
@@ -54,6 +56,7 @@ describe('Blog app', () => {
             );
 
             await expect(page.getByText('Lord of the rings')).toBeVisible();
+            await expect(page.getByText('poprawnie dodano blog')).toBeVisible();
         });
 
         describe('and a note exist', () => {
@@ -67,7 +70,7 @@ describe('Blog app', () => {
             });
 
             test('user can add like to the blog', async ({ page }) => {
-                await page.getByRole('button', { name: 'view' }).click();
+                await page.getByText('Lord of the rings').click();
                 await page.getByRole('button', { name: 'like' }).click();
                 await expect(page.getByText('likes 1 ')).toBeVisible();
                 await page.getByRole('button', { name: 'like' }).click();
@@ -75,7 +78,7 @@ describe('Blog app', () => {
             });
 
             test('user who added a blog can delete it', async ({ page }) => {
-                await page.getByRole('button', { name: 'view' }).click();
+                await page.getByText('Lord of the rings').click();
                 const removeButton = page.getByRole('button', {
                     name: 'remove',
                 });
@@ -107,7 +110,7 @@ describe('Blog app', () => {
 
                 await page.getByRole('button', { name: 'logout' }).click();
                 await loginWith(page, 'ivan', 'Qwerty123');
-                await page.getByRole('button', { name: 'view' }).click();
+                await page.getByText('Lord of the rings').click();
                 await expect(
                     page.getByRole('button', { name: 'remove' }),
                 ).not.toBeVisible();
@@ -147,10 +150,6 @@ describe('Blog app', () => {
                 await expect(page.getByText(/Blog\d+/).first()).toBeVisible();
                 const titles = await page.getByText(/Blog\d+.*/).all();
                 const blogs = titles.map((title) => title.locator('../..'));
-
-                await expect(
-                    page.getByText('Andrzej Jejkowski is logged in'),
-                ).toBeVisible();
 
                 await expect(blogs[0].getByText('Blog4')).toBeVisible();
                 await expect(blogs[1].getByText('Blog3')).toBeVisible();
