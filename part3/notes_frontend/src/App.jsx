@@ -6,9 +6,12 @@ import NoteList from './components/NoteList';
 import Home from './components/Home';
 import Footer from './components/Footer';
 import NoteForm from './components/NoteForm';
+import Notification from './components/Notification';
+import { AppBar, Toolbar, Button } from '@mui/material';
 
 const App = () => {
     const [notes, setNotes] = useState([]);
+    const [notification, setNotification] = useState(null);
 
     useEffect(() => {
         noteService.getAll().then((initialNotes) => {
@@ -24,6 +27,15 @@ const App = () => {
     const addNote = (noteObject) => {
         noteService.create(noteObject).then((returnedNote) => {
             setNotes(notes.concat(returnedNote));
+
+            setNotification({
+                text: `Note '${returnedNote.content}' added!`,
+                type: 'success',
+            });
+
+            setTimeout(() => {
+                setNotification(null);
+            }, 5000);
         });
     };
 
@@ -59,19 +71,36 @@ const App = () => {
         padding: 5,
     };
 
+    const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } };
+
     return (
         <>
-            <div>
-                <Link style={padding} to="/">
-                    home
-                </Link>
-                <Link style={padding} to="/notes">
-                    notes
-                </Link>
-                <Link style={padding} to="/create">
-                    new note
-                </Link>
-            </div>
+            <AppBar position="static">
+                <Toolbar>
+                    <Button color="inherit" component={Link} to="/" sx={style}>
+                        home
+                    </Button>
+                    <Button
+                        color="inherit"
+                        component={Link}
+                        to="/notes"
+                        sx={style}
+                    >
+                        notes
+                    </Button>
+                    <Button
+                        color="inherit"
+                        component={Link}
+                        to="/create"
+                        sx={style}
+                    >
+                        new note
+                    </Button>
+                </Toolbar>
+            </AppBar>
+
+            <Notification notification={notification} />
+
             <Routes>
                 <Route
                     path="/notes/:id"
