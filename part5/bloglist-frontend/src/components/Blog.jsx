@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Button, Card, CardContent, Typography } from '@mui/material';
 
 const Blog = ({ blog, handleLike, user, handleRemoveBlog }) => {
     const navigate = useNavigate();
@@ -12,26 +13,51 @@ const Blog = ({ blog, handleLike, user, handleRemoveBlog }) => {
         return null;
     }
 
+    const margin = {
+        margin: '5px 5px 5px 0',
+    };
+
     return (
-        <div>
-            <h3>{blog.title}</h3>
-            <span>
-                <a href="https://fullstackopen.com/" target="_blanc">
-                    {blog.url}
-                </a>
-            </span>
-            <br />
-            <span>{blog.author}</span>
-            <br />
-            <span>likes {blog.likes} </span>
-            {user && <button onClick={handleLike}>like</button>}
-            <br />
-            <span>Added by {blog.user.name}</span>
-            <br />
-            {user && user.username === blog.user.username && (
-                <button onClick={removeBlog}>remove</button>
-            )}
-        </div>
+        <Card style={{ marginTop: 20 }}>
+            <CardContent>
+                <Typography variant="h4" component="div">
+                    {blog.title}
+                </Typography>
+                <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
+                    by {blog.author}
+                </Typography>
+                <Typography variant="body2">
+                    <a href="https://fullstackopen.com/" target="_blanc">
+                        {blog.url}
+                    </a>
+                </Typography>
+                <Typography sx={{ color: 'text.secondary', mb: 2 }}>
+                    Added by {blog.user.name}
+                </Typography>
+                <Typography>
+                    <b style={margin}>{blog.likes} likes</b>
+                    {user && (
+                        <Button
+                            onClick={handleLike}
+                            variant="outlined"
+                            style={margin}
+                        >
+                            like
+                        </Button>
+                    )}
+                    {user && user.username === blog.user.username && (
+                        <Button
+                            onClick={removeBlog}
+                            variant="outlined"
+                            color="error"
+                            style={margin}
+                        >
+                            remove
+                        </Button>
+                    )}
+                </Typography>
+            </CardContent>
+        </Card>
     );
 };
 
