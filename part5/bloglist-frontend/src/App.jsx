@@ -5,10 +5,12 @@ import BlogList from './components/BlogList';
 import blogService from './services/blogs';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
+import Notification from './components/Notification';
+import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
-    const [notification, setNotification] = useState('');
+    const [notification, setNotification] = useState(null);
 
     const [user, setUser] = useState(null);
 
@@ -35,31 +37,31 @@ const App = () => {
         ? blogs.find((note) => note.id === match.params.id)
         : null;
 
-    const addNotification = (content, time = 5000) => {
-        setNotification(content);
+    const addNotification = (content, type, time = 5000) => {
+        setNotification({ text: content, type: type });
         setTimeout(() => {
-            setNotification('');
+            setNotification(null);
         }, time);
     };
 
     const addNewBlog = async (blog) => {
         if (!user) {
-            addNotification('you have to be logged in');
+            addNotification('you have to be logged in', 'error');
             return;
         }
 
         try {
             const newBlog = await blogService.postBlog(blog);
             setBlogs(blogs.concat(newBlog));
-            addNotification('poprawnie dodano blog');
+            addNotification('poprawnie dodano blog', 'success');
         } catch (e) {
-            addNotification(e.data);
+            addNotification(e.data, 'error');
         }
     };
 
     const handleLike = async (blog) => {
         if (!user) {
-            addNotification('you have to be logged in');
+            addNotification('you have to be logged in', 'error');
             return;
         }
 
@@ -74,9 +76,9 @@ const App = () => {
                     blog.id !== updatedBlog.id ? blog : updatedBlog,
                 ),
             );
-            addNotification('dodano like');
+            addNotification('dodano like', 'success');
         } catch (e) {
-            addNotification(e.data);
+            addNotification(e.data, 'error');
         }
     };
 
@@ -88,50 +90,67 @@ const App = () => {
                 setBlogs(
                     blogs.filter((singleBlog) => singleBlog.id !== blog.id),
                 );
-                addNotification('usunieto bloga');
+                addNotification('usunieto bloga', 'success');
             } catch (e) {
-                addNotification(e.data);
+                addNotification(e.data, 'error');
             }
         }
     };
 
-    const padding = {
-        padding: 5,
+    const handleLogout = () => {
+        setUser(null);
+        window.localStorage.removeItem('blogsAppLoggedInUser');
     };
 
-    const logoutButton = () => (
-        <button
-            onClick={() => {
-                setUser(null);
-                window.localStorage.removeItem('blogsAppLoggedInUser');
-            }}
-        >
-            logout
-        </button>
-    );
+    const inputStyle = {
+        textDecoration: 'none',
+        color: 'white',
+    };
 
     return (
         <>
-            <div>
-                <Link style={padding} to="/">
-                    blogs
-                </Link>
-                {user && (
-                    <Link style={padding} to="/create">
-                        new blog
-                    </Link>
-                )}
-                {!user ? (
-                    <Link style={padding} to="/login">
-                        login
-                    </Link>
-                ) : (
-                    logoutButton()
-                )}
-            </div>
-            <h1>
-                <u>{notification}</u>
-            </h1>
+            <AppBar position="static" sx={{ display: 'flex' }}>
+                <Toolbar>
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{
+                            flexGrow: 1,
+                            display: { xs: 'none', sm: 'block' },
+                        }}
+                    >
+                        MUI
+                    </Typography>
+
+                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                        <Button color="inherit">
+                            <Link to="/" style={inputStyle}>
+                                blogs
+                            </Link>
+                        </Button>
+                        {user && (
+                            <Button color="inherit">
+                                <Link to="/create" style={inputStyle}>
+                                    new blog
+                                </Link>
+                            </Button>
+                        )}
+
+                        {!user ? (
+                            <Button color="inherit">
+                                <Link style={inputStyle} to="/login">
+                                    login
+                                </Link>
+                            </Button>
+                        ) : (
+                            <Button color="inherit" onClick={handleLogout}>
+                                logout
+                            </Button>
+                        )}
+                    </Box>
+                </Toolbar>
+            </AppBar>
+            <Notification notification={notification} />
             <Routes>
                 <Route
                     path="/login"

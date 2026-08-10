@@ -25,9 +25,10 @@ const LoginForm = ({ addNotification, setUser }) => {
             setPassword('');
 
             blogService.setToken(newUser.token);
+            addNotification('Logged in successfully', 'success');
             navigate('/');
         } catch {
-            addNotification('Wrong credentials', 5000);
+            addNotification('Wrong credentials', 'error', 5000);
         }
     };
 
