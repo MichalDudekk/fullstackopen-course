@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button } from '@mui/material';
 
 const BlogForm = ({ addNewBlog }) => {
     const [title, setTitle] = useState('');
@@ -23,39 +24,35 @@ const BlogForm = ({ addNewBlog }) => {
             <h2>create new</h2>
             <form onSubmit={handleNewBlog}>
                 <div>
-                    <label>
-                        title:
-                        <input
-                            type="text"
-                            name="title"
-                            value={title}
-                            onChange={({ target }) => setTitle(target.value)}
-                        />
-                    </label>
+                    <TextField
+                        value={title}
+                        label="title:"
+                        onChange={({ target }) => setTitle(target.value)}
+                    />
                 </div>
                 <div>
-                    <label>
-                        author:
-                        <input
-                            type="text"
-                            name="author"
-                            value={author}
-                            onChange={({ target }) => setAuthor(target.value)}
-                        />
-                    </label>
+                    <TextField
+                        value={author}
+                        label="author:"
+                        onChange={({ target }) => setAuthor(target.value)}
+                        style={{ marginTop: 10 }}
+                    />
                 </div>
                 <div>
-                    <label>
-                        url:
-                        <input
-                            type="text"
-                            name="url"
-                            value={url}
-                            onChange={({ target }) => setUrl(target.value)}
-                        />
-                    </label>
+                    <TextField
+                        value={url}
+                        label="url:"
+                        onChange={({ target }) => setUrl(target.value)}
+                        style={{ marginTop: 10 }}
+                    />
                 </div>
-                <button type="submit">create</button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    style={{ marginTop: 10 }}
+                >
+                    create
+                </Button>
             </form>
         </>
     );

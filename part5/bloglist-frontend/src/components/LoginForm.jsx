@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginService from '../services/login';
 import blogService from '../services/blogs';
+import { TextField, Button } from '@mui/material';
 
 const LoginForm = ({ addNotification, setUser }) => {
     const [username, setUsername] = useState('');
@@ -35,26 +36,28 @@ const LoginForm = ({ addNotification, setUser }) => {
             <h2>Log in to application</h2>
             <form onSubmit={handleLogin}>
                 <div>
-                    <label>
-                        username
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={({ target }) => setUsername(target.value)}
-                        />
-                    </label>
+                    <TextField
+                        label="username"
+                        value={username}
+                        onChange={({ target }) => setUsername(target.value)}
+                        variant="standard"
+                    />
                 </div>
                 <div>
-                    <label>
-                        password
-                        <input
-                            type="text"
-                            value={password}
-                            onChange={({ target }) => setPassword(target.value)}
-                        />
-                    </label>
+                    <TextField
+                        label="password"
+                        value={password}
+                        onChange={({ target }) => setPassword(target.value)}
+                        variant="standard"
+                    />
                 </div>
-                <button type="submit">login</button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    style={{ marginTop: 10 }}
+                >
+                    login
+                </Button>
             </form>
         </>
     );
