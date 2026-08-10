@@ -1,12 +1,20 @@
 import { render, screen } from '@testing-library/react';
 import BlogForm from './BlogForm';
 import userEvent from '@testing-library/user-event';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Container } from '@mui/material';
 
 test('<BlogForm />', async () => {
     // given
     const addNewBlog = vi.fn();
     const user = userEvent.setup();
-    render(<BlogForm addNewBlog={addNewBlog} />);
+    render(
+        <Container>
+            <Router>
+                <BlogForm addNewBlog={addNewBlog} />
+            </Router>
+        </Container>,
+    );
     const title = screen.getByLabelText('title:');
     const author = screen.getByLabelText('author:');
     const url = screen.getByLabelText('url:');

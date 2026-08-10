@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 // import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
+import { Container } from '@mui/material';
 
 let handleLike;
 let handleRemoveBlog;
@@ -23,19 +24,21 @@ const blog = {
 describe('<Blog />', () => {
     test('Blog information and the number of likes are displayed to unauthenticated users, buttons are not displayed', () => {
         render(
-            <Router>
-                <Blog
-                    blog={blog}
-                    user={null}
-                    handleLike={handleLike}
-                    handleRemoveBlog={handleRemoveBlog}
-                />
-            </Router>,
+            <Container>
+                <Router>
+                    <Blog
+                        blog={blog}
+                        user={null}
+                        handleLike={handleLike}
+                        handleRemoveBlog={handleRemoveBlog}
+                    />
+                </Router>
+            </Container>,
         );
 
         const title = screen.getByText('Some title here');
-        const author = screen.getByText('Ivan Ivanovic');
-        const likes = screen.getByText('likes 5');
+        const author = screen.getByText('by Ivan Ivanovic');
+        const likes = screen.getByText('5 likes');
         const url = screen.getByText('https://blog.ai');
 
         expect(title).toBeVisible();
