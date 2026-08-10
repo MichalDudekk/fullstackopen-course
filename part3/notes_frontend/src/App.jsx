@@ -1,41 +1,49 @@
-import { useState, useEffect } from "react";
-import Note from "./components/Note";
-import noteService from "./services/notes";
-import Notification from "./components/Notification";
-import Footer from "./components/Footer";
+import { useState, useEffect } from 'react';
+import noteService from './services/notes';
+import Note from './components/Note';
+import { Routes, Route, Link, useMatch } from 'react-router-dom';
+import NoteList from './components/NoteList';
+import Home from './components/Home';
+import Footer from './components/Footer';
+import NoteForm from './components/NoteForm';
+import Notification from './components/Notification';
+import { AppBar, Toolbar, Button } from '@mui/material';
 
 const App = () => {
-    const [notes, setNotes] = useState(null);
-    const [newNote, setNewNote] = useState("");
-    const [showAll, setShowAll] = useState(true);
-    const [errorMessage, setErrorMessage] = useState("some error happened...");
+    const [notes, setNotes] = useState([]);
+    const [notification, setNotification] = useState(null);
 
     useEffect(() => {
-        noteService.getAll().then((response) => {
-            setNotes(response);
+        noteService.getAll().then((initialNotes) => {
+            setNotes(initialNotes);
         });
     }, []);
 
-    const addNote = (event) => {
-        event.preventDefault();
-        const noteObject = {
-            content: newNote,
-            important: Math.random() < 0.5,
-        };
+    const match = useMatch('/notes/:id');
+    const note = match
+        ? notes.find((note) => note.id === match.params.id)
+        : null;
 
-        noteService.create(noteObject).then((response) => {
-            setNotes(notes.concat(response));
-            setNewNote("");
+    const addNote = (noteObject) => {
+        noteService.create(noteObject).then((returnedNote) => {
+            setNotes(notes.concat(returnedNote));
+
+            setNotification({
+                text: `Note '${returnedNote.content}' added!`,
+                type: 'success',
+            });
+
+            setTimeout(() => {
+                setNotification(null);
+            }, 5000);
         });
     };
 
-    const handleNoteChange = (event) => {
-        setNewNote(event.target.value);
+    const deleteNote = (id) => {
+        noteService.remove(id).then(() => {
+            setNotes(notes.filter((n) => n.id !== id));
+        });
     };
-
-    const notesToShow = showAll
-        ? notes
-        : notes.filter((note) => note.important === true);
 
     const toggleImportanceOf = (id) => {
         const note = notes.find((n) => n.id === id);
@@ -43,51 +51,72 @@ const App = () => {
 
         noteService
             .update(id, changedNote)
-            .then((response) => {
+            .then((returnedNote) => {
                 setNotes(
-                    notes.map((note) => (note.id === id ? response : note)),
+                    notes.map((note) => (note.id !== id ? note : returnedNote)),
                 );
             })
-            .catch((error) => {
-                console.log(error);
-                setErrorMessage(
-                    `Note '${note.content}' was already removed from server`,
-                );
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 5000);
+            .catch(() => {
+                // setErrorMessage(
+                //     `Note '${note.content}' was already removed from server`,
+                // );
+                // setTimeout(() => {
+                //     setErrorMessage(null);
+                // }, 5000);
                 setNotes(notes.filter((n) => n.id !== id));
             });
     };
 
-    if (!notes) {
-        return null;
-    }
+    const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } };
 
     return (
-        <div>
-            <h1>Notes</h1>
-            <Notification message={errorMessage} />
-            <div>
-                <button onClick={() => setShowAll(!showAll)}>
-                    show {showAll ? "important" : "all"}
-                </button>
-            </div>
-            <ul>
-                {notesToShow.map((note) => (
-                    <Note
-                        key={note.id}
-                        note={note}
-                        toggleImportance={() => toggleImportanceOf(note.id)}
-                    />
-                ))}
-            </ul>
-            <form onSubmit={addNote}>
-                <input value={newNote} onChange={handleNoteChange} />
-                <button type="submit">save</button>
-            </form>
+        <>
+            <AppBar position="static">
+                <Toolbar>
+                    <Button color="inherit" component={Link} to="/" sx={style}>
+                        home
+                    </Button>
+                    <Button
+                        color="inherit"
+                        component={Link}
+                        to="/notes"
+                        sx={style}
+                    >
+                        notes
+                    </Button>
+                    <Button
+                        color="inherit"
+                        component={Link}
+                        to="/create"
+                        sx={style}
+                    >
+                        new note
+                    </Button>
+                </Toolbar>
+            </AppBar>
+
+            <Notification notification={notification} />
+
+            <Routes>
+                <Route
+                    path="/notes/:id"
+                    element={
+                        <Note
+                            note={note}
+                            toggleImportanceOf={toggleImportanceOf}
+                            deleteNote={deleteNote}
+                        />
+                    }
+                />
+                <Route path="/notes" element={<NoteList notes={notes} />} />
+                <Route
+                    path="/create"
+                    element={<NoteForm createNote={addNote} />}
+                />
+                <Route path="/" element={<Home />} />
+            </Routes>
             <Footer />
-        </div>
+        </>
     );
 };
 

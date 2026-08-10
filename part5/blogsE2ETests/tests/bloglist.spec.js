@@ -1,0 +1,162 @@
+const { test, expect, beforeEach, describe } = require('@playwright/test');
+const { loginWith, addNewBlog } = require('./helper');
+
+describe('Blog app', () => {
+    beforeEach(async ({ page, request }) => {
+        await request.post('/api/test/reset');
+        await request.post('/api/users', {
+            data: {
+                name: 'Andrzej Jejkowski',
+                username: 'jejek',
+                password: 'kejej123',
+            },
+        });
+
+        await page.goto('/');
+    });
+
+    test('Login form is shown', async ({ page }) => {
+        await page.getByText('login').click();
+
+        const usernameInput = page.getByLabel('username');
+        const passwordInput = page.getByLabel('password');
+        const loginButton = page.getByRole('button', { name: 'login' });
+        await expect(usernameInput).toBeVisible();
+        await expect(passwordInput).toBeVisible();
+        await expect(loginButton).toBeVisible();
+    });
+
+    describe('Login', () => {
+        test('succeeds with correct credentials', async ({ page }) => {
+            await loginWith(page, 'jejek', 'kejej123');
+
+            await expect(
+                page.getByRole('button', { name: 'logout' }),
+            ).toBeVisible();
+        });
+
+        test('fails with wrong credentials', async ({ page }) => {
+            await loginWith(page, 'user', 'user123');
+
+            await expect(page.getByText('wrong credentials')).toBeVisible();
+        });
+    });
+
+    describe('When logged in', () => {
+        beforeEach(async ({ page }) => {
+            await loginWith(page, 'jejek', 'kejej123');
+        });
+
+        test('a new blog can be created', async ({ page }) => {
+            await addNewBlog(
+                page,
+                'Lord of the rings',
+                'LOTR.com',
+                'JRR Tolkien',
+            );
+
+            await expect(page.getByText('Lord of the rings')).toBeVisible();
+            await expect(page.getByText('poprawnie dodano blog')).toBeVisible();
+        });
+
+        describe('and a note exist', () => {
+            beforeEach(async ({ page }) => {
+                await addNewBlog(
+                    page,
+                    'Lord of the rings',
+                    'LOTR.com',
+                    'JRR Tolkien',
+                );
+            });
+
+            test('user can add like to the blog', async ({ page }) => {
+                await page.getByText('Lord of the rings').click();
+                await page.getByRole('button', { name: 'like' }).click();
+                await expect(page.getByText('likes 1 ')).toBeVisible();
+                await page.getByRole('button', { name: 'like' }).click();
+                await expect(page.getByText('likes 2 ')).toBeVisible();
+            });
+
+            test('user who added a blog can delete it', async ({ page }) => {
+                await page.getByText('Lord of the rings').click();
+                const removeButton = page.getByRole('button', {
+                    name: 'remove',
+                });
+                await expect(removeButton).toBeVisible();
+
+                page.once('dialog', async (dialog) => {
+                    expect(dialog.type()).toBe('confirm');
+                    await dialog.accept();
+                });
+
+                await removeButton.click();
+                await expect(
+                    page.getByText('Lord of the rings'),
+                ).not.toBeVisible();
+                await expect(page.getByText('usunieto bloga')).toBeVisible();
+            });
+
+            test("other user can't see remove button", async ({
+                page,
+                request,
+            }) => {
+                await request.post('/api/users', {
+                    data: {
+                        name: 'Ivan',
+                        username: 'ivan',
+                        password: 'Qwerty123',
+                    },
+                });
+
+                await page.getByRole('button', { name: 'logout' }).click();
+                await loginWith(page, 'ivan', 'Qwerty123');
+                await page.getByText('Lord of the rings').click();
+                await expect(
+                    page.getByRole('button', { name: 'remove' }),
+                ).not.toBeVisible();
+            });
+        });
+
+        describe('several notes exist', () => {
+            beforeEach(async ({ page, request }) => {
+                // multi session sollution
+                const response = await request.post('/api/login', {
+                    data: { username: 'jejek', password: 'kejej123' },
+                });
+                const token = (await response.json()).token;
+
+                for (let i = 0; i < 5; i++) {
+                    const res = await request.post('/api/blogs', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        data: {
+                            title: `Blog${i}`,
+                            url: 'LOTR.com',
+                            author: 'JRR Tolkien',
+                            likes: `${i + 1}`,
+                        },
+                    });
+                }
+
+                await page.evaluate(() => localStorage.clear());
+
+                // Ponowne wejście na stronę od zera
+                await page.goto('/');
+                await loginWith(page, 'jejek', 'kejej123');
+            });
+
+            test('blogs are sorted by likes', async ({ page }) => {
+                await expect(page.getByText(/Blog\d+/).first()).toBeVisible();
+                const titles = await page.getByText(/Blog\d+.*/).all();
+                const blogs = titles.map((title) => title.locator('../..'));
+
+                await expect(blogs[0].getByText('Blog4')).toBeVisible();
+                await expect(blogs[1].getByText('Blog3')).toBeVisible();
+                await expect(blogs[2].getByText('Blog2')).toBeVisible();
+                await expect(blogs[3].getByText('Blog1')).toBeVisible();
+                await expect(blogs[4].getByText('Blog0')).toBeVisible();
+            });
+        });
+    });
+});

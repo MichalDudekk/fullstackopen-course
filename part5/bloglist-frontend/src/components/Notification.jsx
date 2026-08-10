@@ -1,9 +1,7 @@
 import { Alert } from '@mui/material';
 
 const Notification = ({ notification }) => {
-    if (!notification) {
-        return null;
-    }
+    if (notification === null) return null;
 
     return (
         <Alert

@@ -116,6 +116,8 @@ describe('Blog api', () => {
     });
 
     test('Updating a blog returns code 200', async () => {
+        const token = await helper.getToken(api);
+
         const blogsAtStart = await helper.blogsInDb();
         const blogId = blogsAtStart[0].id;
 
@@ -124,16 +126,21 @@ describe('Blog api', () => {
             author: 'updated',
             url: 'updated',
             likes: 15,
-            user: user.id,
+            user: user._id,
         };
 
-        await api.put(`/api/blogs/${blogId}`).send(updatedData).expect(200);
+        await api
+            .put(`/api/blogs/${blogId}`)
+            .set({ Authorization: `Bearer ${token}` })
+            .send(updatedData)
+            .expect(200);
 
         const response = await api.get(`/api/blogs/${blogId}`).expect(200);
 
         assert.deepStrictEqual(response.body, {
-            id: blogId,
             ...updatedData,
+            id: blogId,
+            user: updatedData.user.toString(),
         });
     });
 });

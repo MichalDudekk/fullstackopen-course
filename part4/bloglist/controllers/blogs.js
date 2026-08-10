@@ -54,18 +54,28 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
     response.status(204).end();
 });
 
-blogsRouter.put('/:id', async (request, response) => {
-    const { title, url, author, likes } = request.body;
+blogsRouter.put('/:id', userExtractor, async (request, response) => {
+    const { title, url, author, likes, user } = request.body;
 
     const blog = await Blog.findById(request.params.id);
+
     if (!blog) {
         return response.status(404).json({ message: 'blog not found' });
     }
+
+    if (blog.user.toString() !== request.user.id.toString()) {
+        return response.status(403).json({
+            error: 'access denied, only the creator of the post can update it',
+        });
+    }
+
+    const newUser = await User.findById(user);
 
     blog.title = title;
     blog.url = url;
     blog.author = author;
     blog.likes = likes;
+    blog.user = newUser;
 
     const updatedBlog = await blog.save();
     response.status(200).json(updatedBlog);

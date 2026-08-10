@@ -1,0 +1,16 @@
+{
+    "name": "blogse2etests",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "playwright test --project=chromium "
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "devDependencies": {
+        "@playwright/test": "^1.62.1",
+        "@types/node": "^26.1.2"
+    }
+}
