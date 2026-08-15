@@ -3,7 +3,7 @@ import { useNotificationActions } from '../notificationStore';
 
 const AnecdoteList = () => {
     const anecdotes = useAnecdotes();
-    const { vote } = useAnecdoteActions();
+    const { vote, deleteAnecdote } = useAnecdoteActions();
     const { setNotification } = useNotificationActions();
 
     return (
@@ -24,6 +24,16 @@ const AnecdoteList = () => {
                                 }}
                             >
                                 vote
+                            </button>
+                            <button
+                                onClick={() => {
+                                    deleteAnecdote(anecdote.id);
+                                    setNotification(
+                                        `You deleted "${anecdote.content}"`,
+                                    );
+                                }}
+                            >
+                                delete
                             </button>
                         </div>
                     </div>
