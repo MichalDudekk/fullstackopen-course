@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import anecdoteService from './services/anecdotes.js';
 
-const asObject = () => {};
-
 const useAnecdoteStore = create((set) => ({
     anecdotes: [],
     filter: '',
@@ -15,10 +13,12 @@ const useAnecdoteStore = create((set) => ({
                         : anecdote,
                 ),
             })),
-        addAnecdote: (anecdote) =>
+        addAnecdote: async (anecdote) => {
+            const savedAnecdote = await anecdoteService.createNew(anecdote);
             set((state) => ({
-                anecdotes: [...state.anecdotes, asObject(anecdote)],
-            })),
+                anecdotes: [...state.anecdotes, savedAnecdote],
+            }));
+        },
         setFilter: (newFilter) =>
             set(() => ({
                 filter: newFilter,
