@@ -37,3 +37,5 @@ export const useNotes = () => {
     return notes;
 };
 export const useNoteActions = () => useNoteStore((state) => state.actions);
+
+export default useNoteStore;
