@@ -1,23 +1,13 @@
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
-import { useQuery } from '@tanstack/react-query';
+import { useAnecdotes } from './hooks/useAnecdotes';
 
 const App = () => {
-    const getAnecdotes = async () => {
-        const response = await fetch('http://localhost:3001/anecdotes');
-        return await response.json();
-    };
-
-    const result = useQuery({
-        queryKey: ['anecdotes'],
-        queryFn: getAnecdotes,
-        retry: 1,
-    });
-
     const handleVote = (anecdote) => {
         console.log('vote');
     };
 
+    const result = useAnecdotes();
     console.log(result);
 
     if (result.isError) {
@@ -28,7 +18,7 @@ const App = () => {
         return <>Pennding</>;
     }
 
-    const anecdotes = result.data;
+    const anecdotes = result.anecdotes;
 
     return (
         <div>
