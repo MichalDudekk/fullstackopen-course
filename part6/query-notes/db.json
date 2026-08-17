@@ -24,6 +24,16 @@
       "content": "test query",
       "important": true,
       "id": "LM6q5XSTOcU"
+    },
+    {
+      "content": "brand new note",
+      "important": false,
+      "id": "EwnESvQWmL4"
+    },
+    {
+      "content": "sdasdasdasd",
+      "important": false,
+      "id": "HLyyTfckX0M"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
