@@ -21,3 +21,17 @@ export const createAnecdote = async (anecdote) => {
     }
     return await response.json();
 };
+
+export const updateAnecdote = async (anecdote) => {
+    const options = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'Application/json' },
+        body: JSON.stringify(anecdote),
+    };
+
+    const response = await fetch(`${baseUrl}/${anecdote.id}`, options);
+    if (!response.ok) {
+        throw new Error('Failed to fetch notes');
+    }
+    return await response.json();
+};

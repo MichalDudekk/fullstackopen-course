@@ -3,12 +3,11 @@ import Notification from './components/Notification';
 import { useAnecdotes } from './hooks/useAnecdotes';
 
 const App = () => {
-    const handleVote = (anecdote) => {
-        console.log('vote');
-    };
-
     const result = useAnecdotes();
-    console.log(result);
+
+    const handleVote = (anecdote) => {
+        result.updateAnecdote({ ...anecdote, votes: anecdote.votes + 1 });
+    };
 
     if (result.isError) {
         return <>anecdote service not available due to server problems</>;
