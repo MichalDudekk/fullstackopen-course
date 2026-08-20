@@ -11,6 +11,10 @@ const getAll = async () => {
 };
 
 const createNew = async (content) => {
+    if (content.length < 5) {
+        throw new Error('too short anecdote, must have at least 5 characters');
+    }
+
     const options = {
         method: 'POST',
         headers: { 'Content-Type': 'Aplication/json' },

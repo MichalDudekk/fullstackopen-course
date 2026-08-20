@@ -1,10 +1,11 @@
 import { useAnecdotes, useAnecdoteActions } from '../store';
-import { useNotificationActions } from '../notificationStore';
+import { useContext } from 'react';
+import NotificationContext from '../NotificationContext';
 
 const AnecdoteList = () => {
     const anecdotes = useAnecdotes();
     const { vote, deleteAnecdote } = useAnecdoteActions();
-    const { setNotification } = useNotificationActions();
+    const { addNotification } = useContext(NotificationContext);
 
     return (
         <>
@@ -18,7 +19,7 @@ const AnecdoteList = () => {
                             <button
                                 onClick={() => {
                                     vote(anecdote.id);
-                                    setNotification(
+                                    addNotification(
                                         `You voted "${anecdote.content}"`,
                                     );
                                 }}
@@ -28,7 +29,7 @@ const AnecdoteList = () => {
                             <button
                                 onClick={() => {
                                     deleteAnecdote(anecdote.id);
-                                    setNotification(
+                                    addNotification(
                                         `You deleted "${anecdote.content}"`,
                                     );
                                 }}
