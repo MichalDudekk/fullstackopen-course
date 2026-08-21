@@ -4,9 +4,11 @@ import {
     createAnecdote,
     updateAnecdote,
 } from '../services/anecdotes';
+import { useNotification } from './useNotification';
 
 export const useAnecdotes = () => {
     const client = useQueryClient();
+    const { addNotification } = useNotification();
 
     const result = useQuery({
         queryKey: ['anecdotes'],
@@ -19,6 +21,10 @@ export const useAnecdotes = () => {
         onSuccess: (newAnecdote) => {
             const anecdotes = client.getQueryData(['anecdotes']);
             client.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote));
+            addNotification(`You added "${newAnecdote.content}"`);
+        },
+        onError: (e) => {
+            addNotification(e.message);
         },
     });
 
