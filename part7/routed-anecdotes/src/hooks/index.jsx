@@ -18,5 +18,14 @@ export const useAnecdotes = () => {
         anecdoteService.getAll().then((data) => setAnecdotes(data));
     }, []);
 
-    return { anecdotes };
+    const addAnecdote = async (anecdote) => {
+        try {
+            const savedAnecdote = await anecdoteService.createNew(anecdote);
+            setAnecdotes(anecdotes.concat(savedAnecdote));
+        } catch (error) {
+            console.log(error); // primitive
+        }
+    };
+
+    return { anecdotes, addAnecdote };
 };
