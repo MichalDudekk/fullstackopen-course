@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import AnecdoteContext from '../contexts/AnecdoteContext';
 import anecdoteService from '../services/anecdotes';
 
 export const useField = (type) => {
@@ -12,7 +13,7 @@ export const useField = (type) => {
 };
 
 export const useAnecdotes = () => {
-    const [anecdotes, setAnecdotes] = useState([]);
+    const { anecdotes, setAnecdotes } = useContext(AnecdoteContext);
 
     useEffect(() => {
         anecdoteService.getAll().then((data) => setAnecdotes(data));
@@ -27,5 +28,14 @@ export const useAnecdotes = () => {
         }
     };
 
-    return { anecdotes, addAnecdote };
+    const deleteAnecdote = async (id) => {
+        try {
+            await anecdoteService.deleteById(id);
+            setAnecdotes(anecdotes.filter((anecdote) => anecdote.id !== id));
+        } catch (error) {
+            console.log(error); // primitive
+        }
+    };
+
+    return { anecdotes, addAnecdote, deleteAnecdote };
 };
