@@ -13,6 +13,20 @@
       "info": "http://wiki.c2.com/?PrematureOptimization",
       "votes": 0,
       "id": "2"
+    },
+    {
+      "content": "sdfsa",
+      "author": "asd",
+      "info": "sadfsafas",
+      "votes": 0,
+      "id": "xrQaGpgP-0k"
+    },
+    {
+      "content": "asfasdfasdf",
+      "author": "asd",
+      "info": "afsdfas",
+      "votes": 0,
+      "id": "E4B2q94hLeA"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import AnecdoteContext from '../contexts/AnecdoteContext';
 import anecdoteService from '../services/anecdotes';
 
@@ -14,10 +14,6 @@ export const useField = (type) => {
 
 export const useAnecdotes = () => {
     const { anecdotes, setAnecdotes } = useContext(AnecdoteContext);
-
-    useEffect(() => {
-        anecdoteService.getAll().then((data) => setAnecdotes(data));
-    }, []);
 
     const addAnecdote = async (anecdote) => {
         try {
