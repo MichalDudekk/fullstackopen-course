@@ -33,7 +33,7 @@ const putBlog = async (newObject) => {
     const response = await axios.put(
         `${baseUrl}/${newObject.id}`,
         newObject,
-        config,
+        config
     );
 
     delete response.data.user.blogs;

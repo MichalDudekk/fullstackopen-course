@@ -9,18 +9,22 @@ import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
 import { useNotificationDispatch } from './hooks/useNotification';
+import { useBlogs } from './hooks/useBlogs';
 
 const App = () => {
-    const [blogs, setBlogs] = useState([]);
+    const result = useBlogs();
+    const blogs = result.blogs;
+    const setBlogs = (x) => console.log(x);
+
     const setNotification = useNotificationDispatch();
 
     const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        blogService
-            .getAll()
-            .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
-    }, []);
+    // useEffect(() => {
+    //     blogService
+    //         .getAll()
+    //         .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
+    // }, []);
 
     useEffect(() => {
         const newUserStringify = window.localStorage.getItem(
@@ -35,9 +39,6 @@ const App = () => {
     }, []);
 
     const match = useMatch('/blogs/:id');
-    const blog = match
-        ? blogs.find((note) => note.id === match.params.id)
-        : null;
 
     const addNotification = (content, type, time = 5000) => {
         setNotification({ query: 'SET', payload: content, type: type });
@@ -108,6 +109,18 @@ const App = () => {
         textDecoration: 'none',
         color: 'white',
     };
+
+    if (result.isError) {
+        return <>BlogList not available due to server problems</>;
+    }
+
+    if (result.isPending) {
+        return <>Pennding</>;
+    }
+
+    const blog = match
+        ? blogs.find((note) => note.id === match.params.id)
+        : null;
 
     return (
         <>
