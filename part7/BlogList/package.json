@@ -1,0 +1,17 @@
+{
+    "name": "bloglist",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "concurrently -k \"cd server && npm run dev\" \"cd client && npm run dev\"",
+        "build": "npm run build --prefix client && npm run build:ui --prefix server",
+        "start": "npm start --prefix server",
+        "stop": "npx kill-port 3003 5173"
+    },
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "concurrently": "^10.0.5",
+        "kill-port": "^2.0.1"
+    }
+}
