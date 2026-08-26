@@ -8,10 +8,11 @@ import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
+import { useNotificationDispatch } from './hooks/useNotification';
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
-    const [notification, setNotification] = useState(null);
+    const setNotification = useNotificationDispatch();
 
     const [user, setUser] = useState(null);
 
@@ -23,7 +24,7 @@ const App = () => {
 
     useEffect(() => {
         const newUserStringify = window.localStorage.getItem(
-            'blogsAppLoggedInUser',
+            'blogsAppLoggedInUser'
         );
 
         if (newUserStringify) {
@@ -39,9 +40,9 @@ const App = () => {
         : null;
 
     const addNotification = (content, type, time = 5000) => {
-        setNotification({ text: content, type: type });
+        setNotification({ query: 'SET', payload: content, type: type });
         setTimeout(() => {
-            setNotification(null);
+            setNotification({ query: 'CLEAR' });
         }, time);
     };
 
@@ -74,8 +75,8 @@ const App = () => {
             });
             setBlogs(
                 blogs.map((blog) =>
-                    blog.id !== updatedBlog.id ? blog : updatedBlog,
-                ),
+                    blog.id !== updatedBlog.id ? blog : updatedBlog
+                )
             );
             addNotification('dodano like', 'success');
         } catch (e) {
@@ -89,7 +90,7 @@ const App = () => {
                 await blogService.deleteBlog(blog);
 
                 setBlogs(
-                    blogs.filter((singleBlog) => singleBlog.id !== blog.id),
+                    blogs.filter((singleBlog) => singleBlog.id !== blog.id)
                 );
                 addNotification('usunieto bloga', 'success');
             } catch (e) {
@@ -151,7 +152,7 @@ const App = () => {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Notification notification={notification} />
+            <Notification />
             <ErrorBoundary>
                 <Routes>
                     <Route
