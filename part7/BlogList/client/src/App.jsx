@@ -54,8 +54,7 @@ const App = () => {
         }
 
         try {
-            const newBlog = await blogService.postBlog(blog);
-            setBlogs(blogs.concat(newBlog));
+            result.createBlog(blog);
             addNotification('poprawnie dodano blog', 'success');
         } catch (e) {
             addNotification(e.data, 'error');
@@ -69,16 +68,12 @@ const App = () => {
         }
 
         try {
-            const updatedBlog = await blogService.putBlog({
+            result.updateBlog({
                 ...blog,
                 user: blog.user.id,
                 likes: blog.likes + 1,
             });
-            setBlogs(
-                blogs.map((blog) =>
-                    blog.id !== updatedBlog.id ? blog : updatedBlog
-                )
-            );
+
             addNotification('dodano like', 'success');
         } catch (e) {
             addNotification(e.data, 'error');
