@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useMatch } from 'react-router-dom';
+import ErrorBoundary from './components/ErrorBoundary';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import blogService from './services/blogs';
@@ -151,33 +152,35 @@ const App = () => {
                 </Toolbar>
             </AppBar>
             <Notification notification={notification} />
-            <Routes>
-                <Route
-                    path="/login"
-                    element={
-                        <LoginForm
-                            setUser={setUser}
-                            addNotification={addNotification}
-                        />
-                    }
-                />
-                <Route path="/" element={<BlogList blogs={blogs} />} />
-                <Route
-                    path="/create"
-                    element={<BlogForm addNewBlog={addNewBlog} />}
-                />
-                <Route
-                    path="/blogs/:id"
-                    element={
-                        <Blog
-                            blog={blog}
-                            user={user}
-                            handleLike={() => handleLike(blog)}
-                            handleRemoveBlog={() => handleRemoveBlog(blog)}
-                        />
-                    }
-                />
-            </Routes>
+            <ErrorBoundary>
+                <Routes>
+                    <Route
+                        path="/login"
+                        element={
+                            <LoginForm
+                                setUser={setUser}
+                                addNotification={addNotification}
+                            />
+                        }
+                    />
+                    <Route path="/" element={<BlogList blogs={blogs} />} />
+                    <Route
+                        path="/create"
+                        element={<BlogForm addNewBlog={addNewBlog} />}
+                    />
+                    <Route
+                        path="/blogs/:id"
+                        element={
+                            <Blog
+                                blog={blog}
+                                user={user}
+                                handleLike={() => handleLike(blog)}
+                                handleRemoveBlog={() => handleRemoveBlog(blog)}
+                            />
+                        }
+                    />
+                </Routes>
+            </ErrorBoundary>
         </>
     );
 };
