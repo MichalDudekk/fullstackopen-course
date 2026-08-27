@@ -1,6 +1,17 @@
 import { Link } from 'react-router-dom';
+import { useBlogs } from '../hooks/useBlogs';
 
-const BlogList = ({ blogs }) => {
+const BlogList = () => {
+    const result = useBlogs();
+
+    if (result.isPending) return null;
+
+    if (result.isError) return <>Error</>;
+
+    const blogs = result.blogs.toSorted(
+        (blogA, blogB) => blogB.likes - blogA.likes
+    );
+
     return (
         <>
             <h2>blogs</h2>

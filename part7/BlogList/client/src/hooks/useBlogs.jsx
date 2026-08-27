@@ -32,6 +32,17 @@ export const useBlogs = () => {
         },
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: blogService.deleteBlog,
+        onSuccess: (blogId) => {
+            const blogs = client.getQueryData(['blogs']);
+            client.setQueryData(
+                ['blogs'],
+                blogs.filter((blog) => blog.id !== blogId)
+            );
+        },
+    });
+
     return {
         blogs: result.data,
         isPending: result.isPending,
@@ -41,6 +52,9 @@ export const useBlogs = () => {
         },
         updateBlog: (blog) => {
             updateMutation.mutate(blog);
+        },
+        deleteBlog: (blog) => {
+            deleteMutation.mutate(blog);
         },
     };
 };

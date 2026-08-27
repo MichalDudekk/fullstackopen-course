@@ -14,7 +14,6 @@ import { useBlogs } from './hooks/useBlogs';
 const App = () => {
     const result = useBlogs();
     const blogs = result.blogs;
-    const setBlogs = (x) => console.log(x);
 
     const setNotification = useNotificationDispatch();
 
@@ -83,11 +82,7 @@ const App = () => {
     const handleRemoveBlog = async (blog) => {
         if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
             try {
-                await blogService.deleteBlog(blog);
-
-                setBlogs(
-                    blogs.filter((singleBlog) => singleBlog.id !== blog.id)
-                );
+                result.deleteBlog(blog);
                 addNotification('usunieto bloga', 'success');
             } catch (e) {
                 addNotification(e.data, 'error');
@@ -172,7 +167,7 @@ const App = () => {
                             />
                         }
                     />
-                    <Route path="/" element={<BlogList blogs={blogs} />} />
+                    <Route path="/" element={<BlogList />} />
                     <Route
                         path="/create"
                         element={<BlogForm addNewBlog={addNewBlog} />}
