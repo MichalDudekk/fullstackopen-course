@@ -53,6 +53,10 @@ const App = () => {
         }
     };
 
+    const addComment = async (comment, blogId) => {
+        result.addComment(comment, blogId);
+    };
+
     const inputStyle = {
         textDecoration: 'none',
         color: 'white',
@@ -140,6 +144,9 @@ const App = () => {
                                 user={user}
                                 handleLike={() => handleLike(blog)}
                                 handleRemoveBlog={() => handleRemoveBlog(blog)}
+                                addComment={(comment) =>
+                                    addComment(comment, blog.id)
+                                }
                             />
                         }
                     />

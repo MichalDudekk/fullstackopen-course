@@ -43,6 +43,23 @@ export const useBlogs = () => {
         },
     });
 
+    const addCommentMutation = useMutation({
+        mutationFn: async ({ comment, blogId }) => {
+            return await blogService.postComment(comment, blogId);
+        },
+        onSuccess: (updatedBlog) => {
+            const blogs = client.getQueryData(['blogs']);
+            client.setQueryData(
+                ['blogs'],
+                blogs.map((blog) =>
+                    blog.id !== updatedBlog.id
+                        ? blog
+                        : { ...blog, comments: updatedBlog.comments }
+                )
+            );
+        },
+    });
+
     return {
         blogs: result.data,
         isPending: result.isPending,
@@ -55,6 +72,9 @@ export const useBlogs = () => {
         },
         deleteBlog: (blog) => {
             deleteMutation.mutate(blog);
+        },
+        addComment: (comment, blogId) => {
+            addCommentMutation.mutate({ comment, blogId });
         },
     };
 };

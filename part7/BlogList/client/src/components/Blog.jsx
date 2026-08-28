@@ -1,12 +1,26 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import {
+    Button,
+    Card,
+    CardContent,
+    Typography,
+    TextField,
+} from '@mui/material';
 
-const Blog = ({ blog, handleLike, user, handleRemoveBlog }) => {
+const Blog = ({ blog, handleLike, user, handleRemoveBlog, addComment }) => {
     const navigate = useNavigate();
+    const [newComment, setNewComment] = useState('');
 
     const removeBlog = () => {
         handleRemoveBlog();
         navigate('/');
+    };
+
+    const handleAddComment = (event) => {
+        event.preventDefault();
+        addComment(newComment);
+        setNewComment('');
     };
 
     if (!blog) {
@@ -58,6 +72,25 @@ const Blog = ({ blog, handleLike, user, handleRemoveBlog }) => {
                 </Typography>
                 <br />
                 <Typography variant="h5">comments</Typography>
+
+                <form onSubmit={handleAddComment}>
+                    <TextField
+                        label="add a comment"
+                        value={newComment}
+                        onChange={({ target }) => setNewComment(target.value)}
+                        // variant="standard"
+                        size="small"
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        style={{ marginLeft: 10 }}
+                        sx={{ height: 40 }}
+                    >
+                        add comment
+                    </Button>
+                </form>
+
                 <ul>
                     {blog.comments.map((comment, index) => (
                         <li key={`${comment}${index}`}>{comment}</li>
