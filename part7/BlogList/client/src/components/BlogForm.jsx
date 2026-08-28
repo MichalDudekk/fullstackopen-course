@@ -1,22 +1,37 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button } from '@mui/material';
+import { useUser } from '../hooks/useUser';
+import { useAddNotification } from '../hooks/useNotification';
 
-const BlogForm = ({ addNewBlog }) => {
+const BlogForm = ({ createBlog }) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [url, setUrl] = useState('');
 
     const navigate = useNavigate();
+    const { user } = useUser();
+    const addNotification = useAddNotification();
 
-    const handleNewBlog = (event) => {
+    const handleNewBlog = async (event) => {
         event.preventDefault();
 
-        addNewBlog({ title, author, url });
-        navigate('/');
-        setTitle('');
-        setAuthor('');
-        setUrl('');
+        if (!user) {
+            addNotification('you have to be logged in', 'error');
+            return;
+        }
+
+        try {
+            await createBlog({ title, author, url });
+
+            addNotification('poprawnie dodano blog', 'success');
+            navigate('/');
+            setTitle('');
+            setAuthor('');
+            setUrl('');
+        } catch (e) {
+            addNotification(e.response.data.error, 'error');
+        }
     };
 
     return (

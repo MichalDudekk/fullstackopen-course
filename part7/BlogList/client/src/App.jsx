@@ -21,20 +21,6 @@ const App = () => {
 
     const { user, logoutUser } = useUser();
 
-    const addNewBlog = async (blog) => {
-        if (!user) {
-            addNotification('you have to be logged in', 'error');
-            return;
-        }
-
-        try {
-            result.createBlog(blog);
-            addNotification('poprawnie dodano blog', 'success');
-        } catch (e) {
-            addNotification(e.data, 'error');
-        }
-    };
-
     const handleLike = async (blog) => {
         if (!user) {
             addNotification('you have to be logged in', 'error');
@@ -137,7 +123,7 @@ const App = () => {
                     <Route path="/" element={<BlogList />} />
                     <Route
                         path="/create"
-                        element={<BlogForm addNewBlog={addNewBlog} />}
+                        element={<BlogForm createBlog={result.createBlog} />}
                     />
                     <Route
                         path="/blogs/:id"

@@ -47,8 +47,8 @@ export const useBlogs = () => {
         blogs: result.data,
         isPending: result.isPending,
         isError: result.isError,
-        createBlog: (blog) => {
-            createMutation.mutate(blog);
+        createBlog: async (blog) => {
+            await createMutation.mutateAsync(blog);
         },
         updateBlog: (blog) => {
             updateMutation.mutate(blog);
