@@ -56,6 +56,13 @@ const Blog = ({ blog, handleLike, user, handleRemoveBlog }) => {
                         </Button>
                     )}
                 </Typography>
+                <br />
+                <Typography variant="h5">comments</Typography>
+                <ul>
+                    {blog.comments.map((comment, index) => (
+                        <li key={`${comment}${index}`}>{comment}</li>
+                    ))}
+                </ul>
             </CardContent>
         </Card>
     );
