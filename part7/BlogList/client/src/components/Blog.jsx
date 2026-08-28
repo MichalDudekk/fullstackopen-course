@@ -80,15 +80,18 @@ const Blog = ({ blog, handleLike, user, handleRemoveBlog, addComment }) => {
                         onChange={({ target }) => setNewComment(target.value)}
                         // variant="standard"
                         size="small"
+                        disabled={user ? false : true}
                     />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        style={{ marginLeft: 10 }}
-                        sx={{ height: 40 }}
-                    >
-                        add comment
-                    </Button>
+                    {user && (
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            style={{ marginLeft: 10 }}
+                            sx={{ height: 40 }}
+                        >
+                            add comment
+                        </Button>
+                    )}
                 </form>
 
                 <ul>

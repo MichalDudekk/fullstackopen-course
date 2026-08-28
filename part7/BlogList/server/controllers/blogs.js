@@ -82,6 +82,10 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
 });
 
 blogsRouter.post('/:id/comments', userExtractor, async (request, response) => {
+    if (!request.user) {
+        return response.status(401);
+    }
+
     const { comment } = request.body;
 
     if (!typeof comment === 'string') {
