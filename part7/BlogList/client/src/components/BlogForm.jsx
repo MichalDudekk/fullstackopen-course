@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button } from '@mui/material';
 import { useUser } from '../hooks/useUser';
 import { useAddNotification } from '../hooks/useNotification';
+import { useField } from '../hooks/useField';
 
 const BlogForm = ({ createBlog }) => {
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
-    const [url, setUrl] = useState('');
+    const { reset: resetTitle, ...title } = useField();
+    const { reset: resetAuthor, ...author } = useField();
+    const { reset: resetUrl, ...url } = useField();
 
     const navigate = useNavigate();
     const { user } = useUser();
@@ -22,13 +22,17 @@ const BlogForm = ({ createBlog }) => {
         }
 
         try {
-            await createBlog({ title, author, url });
+            await createBlog({
+                title: title.value,
+                author: author.value,
+                url: url.value,
+            });
 
             addNotification('poprawnie dodano blog', 'success');
             navigate('/');
-            setTitle('');
-            setAuthor('');
-            setUrl('');
+            resetTitle();
+            resetAuthor();
+            resetUrl();
         } catch (e) {
             addNotification(e.response.data.error, 'error');
         }
@@ -39,25 +43,19 @@ const BlogForm = ({ createBlog }) => {
             <h2>create new</h2>
             <form onSubmit={handleNewBlog}>
                 <div>
-                    <TextField
-                        value={title}
-                        label="title:"
-                        onChange={({ target }) => setTitle(target.value)}
-                    />
+                    <TextField label="title:" {...title} />
                 </div>
                 <div>
                     <TextField
-                        value={author}
                         label="author:"
-                        onChange={({ target }) => setAuthor(target.value)}
+                        {...author}
                         style={{ marginTop: 10 }}
                     />
                 </div>
                 <div>
                     <TextField
-                        value={url}
                         label="url:"
-                        onChange={({ target }) => setUrl(target.value)}
+                        {...url}
                         style={{ marginTop: 10 }}
                     />
                 </div>
