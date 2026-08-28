@@ -1,35 +1,33 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import loginService from '../services/login';
-import blogService from '../services/blogs';
 import { TextField, Button } from '@mui/material';
+import { useUser } from '../hooks/useUser';
+import { useAddNotification } from '../hooks/useNotification';
 
-const LoginForm = ({ addNotification, setUser }) => {
+const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
 
+    const { loginUser } = useUser();
+    const addNotification = useAddNotification();
+
     const handleLogin = async (event) => {
         event.preventDefault();
 
-        try {
-            const newUser = await loginService.login({ username, password });
-            setUser(newUser);
-            window.localStorage.setItem(
-                'blogsAppLoggedInUser',
-                JSON.stringify(newUser),
-            );
+        const result = await loginUser(username, password);
 
-            setUsername('');
-            setPassword('');
-
-            blogService.setToken(newUser.token);
-            addNotification('Logged in successfully', 'success');
-            navigate('/');
-        } catch {
+        if (!result.ok) {
             addNotification('Wrong credentials', 'error', 5000);
+            return;
         }
+
+        setUsername('');
+        setPassword('');
+
+        navigate('/');
+        addNotification('Logged in successfully', 'success');
     };
 
     return (

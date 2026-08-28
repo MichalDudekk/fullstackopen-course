@@ -19,7 +19,7 @@ const App = () => {
 
     const addNotification = useAddNotification();
 
-    const { user, setUser, logoutUser } = useUser();
+    const { user, logoutUser } = useUser();
 
     const addNewBlog = async (blog) => {
         if (!user) {
@@ -131,10 +131,7 @@ const App = () => {
                     <Route
                         path="/login"
                         element={
-                            <LoginForm
-                                setUser={setUser}
-                                addNotification={addNotification}
-                            />
+                            <LoginForm addNotification={addNotification} />
                         }
                     />
                     <Route path="/" element={<BlogList />} />
