@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
+import UserList from './components/UserList';
 import Notification from './components/Notification';
 import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
 import { useAddNotification } from './hooks/useNotification';
@@ -89,6 +90,11 @@ const App = () => {
                                 blogs
                             </Link>
                         </Button>
+                        <Button color="inherit">
+                            <Link to="/users" style={inputStyle}>
+                                users
+                            </Link>
+                        </Button>
                         {user && (
                             <Button color="inherit">
                                 <Link to="/create" style={inputStyle}>
@@ -136,6 +142,7 @@ const App = () => {
                             />
                         }
                     />
+                    <Route path="/users" element={<UserList />} />
                     <Route path="*" element={<h1>404 - Page Not Found</h1>} />
                 </Routes>
             </ErrorBoundary>
