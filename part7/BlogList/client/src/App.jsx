@@ -1,50 +1,25 @@
-import { useState, useEffect } from 'react';
+// import { useState } from 'react';
 import { Routes, Route, Link, useMatch } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
-import blogService from './services/blogs';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
-import { useNotificationDispatch } from './hooks/useNotification';
+import { useAddNotification } from './hooks/useNotification';
 import { useBlogs } from './hooks/useBlogs';
+import { useUser } from './hooks/useUser';
 
 const App = () => {
     const result = useBlogs();
     const blogs = result.blogs;
 
-    const setNotification = useNotificationDispatch();
-
-    const [user, setUser] = useState(null);
-
-    // useEffect(() => {
-    //     blogService
-    //         .getAll()
-    //         .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
-    // }, []);
-
-    useEffect(() => {
-        const newUserStringify = window.localStorage.getItem(
-            'blogsAppLoggedInUser'
-        );
-
-        if (newUserStringify) {
-            const newUser = JSON.parse(newUserStringify);
-            setUser(newUser);
-            blogService.setToken(newUser.token);
-        }
-    }, []);
-
     const match = useMatch('/blogs/:id');
 
-    const addNotification = (content, type, time = 5000) => {
-        setNotification({ query: 'SET', payload: content, type: type });
-        setTimeout(() => {
-            setNotification({ query: 'CLEAR' });
-        }, time);
-    };
+    const addNotification = useAddNotification();
+
+    const { user, setUser, logoutUser } = useUser();
 
     const addNewBlog = async (blog) => {
         if (!user) {
@@ -88,11 +63,6 @@ const App = () => {
                 addNotification(e.data, 'error');
             }
         }
-    };
-
-    const handleLogout = () => {
-        setUser(null);
-        window.localStorage.removeItem('blogsAppLoggedInUser');
     };
 
     const inputStyle = {
@@ -148,7 +118,7 @@ const App = () => {
                                 </Link>
                             </Button>
                         ) : (
-                            <Button color="inherit" onClick={handleLogout}>
+                            <Button color="inherit" onClick={logoutUser}>
                                 logout
                             </Button>
                         )}

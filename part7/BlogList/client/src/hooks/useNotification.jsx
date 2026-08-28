@@ -6,7 +6,15 @@ export const useNotificationValue = () => {
     return notification;
 };
 
-export const useNotificationDispatch = () => {
-    const [, dispatch] = useContext(NotificationContext);
-    return dispatch;
+export const useAddNotification = () => {
+    const [, setNotification] = useContext(NotificationContext);
+
+    const addNotification = (content, type, time = 5000) => {
+        setNotification({ query: 'SET', payload: content, type: type });
+        setTimeout(() => {
+            setNotification({ query: 'CLEAR' });
+        }, time);
+    };
+
+    return addNotification;
 };
