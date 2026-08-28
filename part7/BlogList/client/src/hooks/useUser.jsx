@@ -2,23 +2,21 @@ import { useContext } from 'react';
 import UserContext from '../contexts/UserContext';
 import loginService from '../services/login';
 import blogService from '../services/blogs';
+import { removeUser, saveUser } from '../services/persistentUser';
 
 export const useUser = () => {
     const { user, setUser } = useContext(UserContext);
 
     const logoutUser = () => {
         setUser(null);
-        window.localStorage.removeItem('blogsAppLoggedInUser');
+        removeUser();
     };
 
     const loginUser = async (username, password) => {
         try {
             const newUser = await loginService.login({ username, password });
             setUser(newUser);
-            window.localStorage.setItem(
-                'blogsAppLoggedInUser',
-                JSON.stringify(newUser)
-            );
+            saveUser(newUser);
 
             blogService.setToken(newUser.token);
 
