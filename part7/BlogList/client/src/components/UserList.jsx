@@ -9,6 +9,7 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Typography,
 } from '@mui/material';
 
 const UserList = () => {
@@ -20,11 +21,19 @@ const UserList = () => {
         });
     }, []);
 
-    if (!users) return <h1>fetching</h1>;
+    if (users.length === 0) return null;
 
     return (
         <>
-            <h1>Users</h1>
+            <br />
+            <Typography
+                variant="h5"
+                component="h2"
+                fontWeight={700}
+                gutterBottom
+            >
+                Users
+            </Typography>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>

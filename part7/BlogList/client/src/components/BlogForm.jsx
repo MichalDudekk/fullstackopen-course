@@ -3,6 +3,7 @@ import { TextField, Button } from '@mui/material';
 import { useUser } from '../hooks/useUser';
 import { useAddNotification } from '../hooks/useNotification';
 import { useField } from '../hooks/useField';
+import { Typography } from '@mui/material';
 
 const BlogForm = ({ createBlog }) => {
     const { reset: resetTitle, ...title } = useField();
@@ -40,7 +41,15 @@ const BlogForm = ({ createBlog }) => {
 
     return (
         <>
-            <h2>create new</h2>
+            <br />
+            <Typography
+                variant="h5"
+                component="h2"
+                fontWeight={700}
+                gutterBottom
+            >
+                Create New
+            </Typography>
             <form onSubmit={handleNewBlog}>
                 <div>
                     <TextField label="title:" {...title} />

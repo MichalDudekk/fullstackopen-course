@@ -6,6 +6,9 @@ import {
     CardContent,
     Typography,
     TextField,
+    List,
+    ListItem,
+    ListItemText,
 } from '@mui/material';
 
 const Blog = ({ blog, handleLike, user, handleRemoveBlog, addComment }) => {
@@ -94,11 +97,38 @@ const Blog = ({ blog, handleLike, user, handleRemoveBlog, addComment }) => {
                     )}
                 </form>
 
-                <ul>
-                    {blog.comments.map((comment, index) => (
-                        <li key={`${comment}${index}`}>{comment}</li>
-                    ))}
-                </ul>
+                <br />
+
+                {blog.comments.length === 0 ? (
+                    <Typography variant="body2" color="text.secondary">
+                        No comments yet.
+                    </Typography>
+                ) : (
+                    <List disablePadding>
+                        {blog.comments.map((comment, index) => (
+                            <ListItem
+                                key={`${comment}${index}`}
+                                disableGutters
+                                sx={{
+                                    py: 1,
+                                    px: 2,
+                                    mb: 1,
+                                    backgroundColor: 'grey.50',
+                                    borderLeft: '3px solid',
+                                    borderColor: 'primary.light',
+                                    borderRadius: 1,
+                                }}
+                            >
+                                <ListItemText
+                                    primary={comment}
+                                    primaryTypographyProps={{
+                                        variant: 'body2',
+                                    }}
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                )}
             </CardContent>
         </Card>
     );
