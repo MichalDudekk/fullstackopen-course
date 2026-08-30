@@ -1,0 +1,21 @@
+{
+    "name": "esbuil-react",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "esbuild src/main.jsx --bundle --sourcemap --minify --outfile=dist/main.js --jsx=automatic",
+        "serve": "npx serve dist",
+        "dev": "esbuild src/main.jsx --bundle --outfile=dist/main.js --jsx=automatic --servedir=./dist --watch"
+    },
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8"
+    },
+    "devDependencies": {
+        "esbuild": "^0.28.2"
+    }
+}
