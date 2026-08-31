@@ -27,6 +27,11 @@ let persons = [
 ];
 
 const typeDefs = /* GraphQL */ `
+    enum YesNo {
+        YES
+        NO
+    }
+
     type Address {
         street: String!
         city: String!
@@ -46,11 +51,12 @@ const typeDefs = /* GraphQL */ `
             street: String!
             city: String!
         ): Person
+        editNumber(name: String!, phone: String!): Person
     }
 
     type Query {
         personCount: Int!
-        allPersons: [Person!]!
+        allPersons(phone: YesNo): [Person!]!
         findPerson(name: String!): Person
     }
 `;
@@ -58,7 +64,8 @@ const typeDefs = /* GraphQL */ `
 const resolvers = {
     Query: {
         personCount: () => persons.length,
-        allPersons: () => persons,
+        allPersons: (root, args) =>
+            persons.filter((p) => (args.phone === 'YES' ? p.phone : !p.phone)),
         findPerson: (root, args) => persons.find((p) => p.name === args.name),
     },
 
@@ -84,6 +91,16 @@ const resolvers = {
 
             const person = { ...args, id: uuid() };
             persons = persons.concat(person);
+            return person;
+        },
+
+        editNumber: (root, args) => {
+            const person = persons.find((p) => p.name === args.name);
+            if (!person) {
+                return null;
+            }
+
+            person.phone = args.phone;
             return person;
         },
     },
