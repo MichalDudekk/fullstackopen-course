@@ -1,8 +1,20 @@
-import { useQuery } from '@apollo/client/react';
-import { ALL_AUTHORS } from '../queries';
+import { useQuery, useMutation } from '@apollo/client/react';
+import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries';
+
+import { useState } from 'react';
 
 const Authors = (props) => {
+    const [name, setName] = useState('');
+    const [born, setBorn] = useState('');
+
     const result = useQuery(ALL_AUTHORS);
+    const [editAuthor] = useMutation(EDIT_AUTHOR, {
+        onCompleted: (data) => {
+            if (!data.editAuthor) {
+                console.log('author not found');
+            }
+        },
+    });
 
     if (result.loading) {
         return null;
@@ -13,6 +25,12 @@ const Authors = (props) => {
     }
 
     const authors = result.data.allAuthors;
+
+    const handleEditAuthor = (event) => {
+        event.preventDefault();
+
+        editAuthor({ variables: { name, setBornTo: Number(born) } });
+    };
 
     return (
         <div>
@@ -33,6 +51,29 @@ const Authors = (props) => {
                     ))}
                 </tbody>
             </table>
+
+            <h2>Set birthyear</h2>
+            <form onSubmit={handleEditAuthor}>
+                <label>
+                    name
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                    />
+                </label>
+                <br />
+                <label>
+                    born
+                    <input
+                        type="text"
+                        value={born}
+                        onChange={(event) => setBorn(event.target.value)}
+                    />
+                </label>
+                <br />
+                <button>update author</button>
+            </form>
         </div>
     );
 };
