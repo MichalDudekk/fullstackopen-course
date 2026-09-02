@@ -56,11 +56,22 @@ const Authors = (props) => {
             <form onSubmit={handleEditAuthor}>
                 <label>
                     name
-                    <input
-                        type="text"
+                    <select
                         value={name}
                         onChange={(event) => setName(event.target.value)}
-                    />
+                    >
+                        <option value="" disabled>
+                            --Select author--
+                        </option>
+                        {authors.map((author) => {
+                            return (
+                                <option value={author.name} key={author.id}>
+                                    {author.name}
+                                </option>
+                            );
+                        })}
+                        <option value="someOption">Some option</option>
+                    </select>
                 </label>
                 <br />
                 <label>
