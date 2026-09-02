@@ -65,7 +65,7 @@ const resolvers = {
     Query: {
         personCount: () => persons.length,
         allPersons: (root, args) =>
-            persons.filter((p) => (args.phone === 'YES' ? p.phone : !p.phone)),
+            persons.filter((p) => (args.phone === 'YES' ? p.phone : true)),
         findPerson: (root, args) => persons.find((p) => p.name === args.name),
     },
 
