@@ -151,7 +151,7 @@ const resolvers = {
                 await authorToSave.save();
             } catch (error) {
                 throw new GraphQLError(
-                    `Saving person or author failed: ${error.message}`,
+                    `Saving book or author failed: ${error.message}`,
                     {
                         extensions: {
                             code: 'BAD_USER_INPUT',
@@ -181,7 +181,7 @@ const resolvers = {
                 await author.save();
             } catch (error) {
                 throw new GraphQLError(
-                    `Saving person or author failed: ${error.message}`,
+                    `Saving author failed: ${error.message}`,
                     {
                         extensions: {
                             code: 'BAD_USER_INPUT',
