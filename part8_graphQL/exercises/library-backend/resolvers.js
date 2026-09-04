@@ -106,12 +106,19 @@ const resolvers = {
             return authors.length;
         },
         allBooks: async (root, args) => {
-            let result = await Book.find({}).populate('author');
-            if (args.author) {
-                result = result.filter((b) => b.author === args.author);
+            let result;
+            if (!args.author && !args.genre) {
+                result = await Book.find({}).populate('author');
             }
+            // if (args.author) {
+            //     result = await Book.find({ author: {args.author} }).populate(
+            //         'author',
+            //     );
+            // }
             if (args.genre) {
-                result = result.filter((b) => b.genres.includes(args.genre));
+                result = await Book.find({ genres: args.genre }).populate(
+                    'author',
+                );
             }
             return result;
         },
