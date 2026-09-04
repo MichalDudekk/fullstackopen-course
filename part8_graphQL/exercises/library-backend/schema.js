@@ -1,17 +1,17 @@
 const typeDefs = /* GraphQL */ `
-    type Book {
-        title: String!
-        published: Int!
-        author: String!
-        id: ID!
-        genres: [String!]!
-    }
-
     type Author {
         name: String!
         id: ID!
         born: Int
         bookCount: Int!
+    }
+
+    type Book {
+        title: String!
+        published: Int!
+        author: Author!
+        id: ID!
+        genres: [String!]!
     }
 
     type Query {
