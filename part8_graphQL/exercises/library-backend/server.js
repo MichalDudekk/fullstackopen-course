@@ -13,7 +13,6 @@ const getUserFromAuthHeader = async (auth) => {
     }
 
     const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
-    console.log(decodedToken);
     return User.findById(decodedToken.id);
 };
 
