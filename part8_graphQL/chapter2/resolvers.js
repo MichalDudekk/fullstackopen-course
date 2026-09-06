@@ -29,14 +29,14 @@ let persons = [
 const resolvers = {
     Query: {
         personCount: () => persons.length,
-        allPersons: (root, args) => {
+        allPersons: async (root, args) => {
             if (!args.phone) {
                 return Person.find({});
             }
 
             return Person.find({ phone: { $exists: args.phone === 'YES' } });
         },
-        findPerson: (root, args) => Person.findOne({ name: args.name }),
+        findPerson: async (root, args) => Person.findOne({ name: args.name }),
         me: (root, args, context) => {
             return context.currentUser;
         },
