@@ -39,6 +39,17 @@ const resolvers = {
         },
     },
     Mutation: {
+        _resetDatabase: async () => {
+            if (process.env.NODE_ENV !== 'test') {
+                throw new GraphQLError(
+                    '_resetDatabase is only available in test mode',
+                );
+            }
+            await Author.deleteMany({});
+            await Book.deleteMany({});
+            await User.deleteMany({});
+            return true;
+        },
         addBook: async (root, args, context) => {
             const currentUser = context.currentUser;
 
@@ -53,12 +64,40 @@ const resolvers = {
             const { title, published, author, genres } = args;
 
             let authorToSave;
-            const authorInDb = await Author.findOne({ name: author });
+            try {
+                authorToSave = await Author.findOneAndUpdate(
+                    { name: author },
+                    { $setOnInsert: { name: author } },
+                    { new: true, upsert: true, runValidators: true },
+                );
+            } catch (error) {
+                // rzadkie dwa inserty jednocześnie - 11000 to duplicate name
+                if (error.code === 11000) {
+                    authorToSave = await Author.findOne({ name: author });
+                } else {
+                    throw new GraphQLError(
+                        `Saving author failed: ${error.message}`,
+                        {
+                            extensions: {
+                                code: 'BAD_USER_INPUT',
+                                invalidArgs: args.author,
+                                error,
+                            },
+                        },
+                    );
+                }
+            }
 
-            if (!authorInDb) {
-                authorToSave = new Author({ name: author });
-            } else {
-                authorToSave = authorInDb;
+            if (!authorToSave) {
+                throw new GraphQLError(
+                    `Saving author failed: could not resolve author`,
+                    {
+                        extensions: {
+                            code: 'BAD_USER_INPUT',
+                            invalidArgs: args.author,
+                        },
+                    },
+                );
             }
 
             const book = new Book({
@@ -70,18 +109,14 @@ const resolvers = {
 
             try {
                 await book.save();
-                await authorToSave.save();
             } catch (error) {
-                throw new GraphQLError(
-                    `Saving book or author failed: ${error.message}`,
-                    {
-                        extensions: {
-                            code: 'BAD_USER_INPUT',
-                            invalidArgs: args.name,
-                            error,
-                        },
+                throw new GraphQLError(`Saving book failed: ${error.message}`, {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        invalidArgs: args.title,
+                        error,
                     },
-                );
+                });
             }
 
             return book;
@@ -97,20 +132,13 @@ const resolvers = {
                 });
             }
 
-            const author = await Author.findOne({ name: args.name });
-
-            if (!author) {
-                throw new GraphQLError(`Author '${args.name}' not found`, {
-                    extensions: {
-                        code: 'BAD_USER_INPUT',
-                        invalidArgs: args.name,
-                    },
-                });
-            }
-
-            author.born = args.setBornTo;
+            let author;
             try {
-                await author.save();
+                author = await Author.findOneAndUpdate(
+                    { name: args.name },
+                    { $set: { born: args.setBornTo } },
+                    { returnDocument: 'after', runValidators: true },
+                );
             } catch (error) {
                 throw new GraphQLError(
                     `Saving author failed: ${error.message}`,
@@ -123,6 +151,17 @@ const resolvers = {
                     },
                 );
             }
+
+            if (!author) {
+                return null;
+                // throw new GraphQLError(`Author '${args.name}' not found`, {
+                //     extensions: {
+                //         code: 'BAD_USER_INPUT',
+                //         invalidArgs: args.name,
+                //     },
+                // });
+            }
+
             return author;
         },
         createUser: async (root, args) => {
