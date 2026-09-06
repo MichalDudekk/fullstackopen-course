@@ -1,0 +1,17 @@
+name: Test library-backend Runner
+
+on:
+    push:
+        branches: [graphQL-part8]
+        paths:
+            - 'part8_graphQL/exercises/**'
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+
+            - name: Run chapter 4 tests
+              uses: ./part8_graphQL/exercises/.github/workflows
