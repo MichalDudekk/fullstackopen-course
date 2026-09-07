@@ -28,6 +28,7 @@ const typeDefs = /* GraphQL */ `
         bookCount: Int!
         authorCount: Int!
         allBooks(author: String, genre: String): [Book!]!
+        allGenres: [String!]!
         allAuthors: [Author!]!
         me: User
     }

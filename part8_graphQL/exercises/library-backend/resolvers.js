@@ -31,6 +31,12 @@ const resolvers = {
             }
             return result;
         },
+        allGenres: async () => {
+            const books = await Book.find({});
+            const allGenres = books.map((book) => book.genres).flat();
+            const uniqueGenres = [...new Set(allGenres)];
+            return uniqueGenres;
+        },
         allAuthors: async () => {
             return await Author.find({});
         },
