@@ -37,7 +37,9 @@ export const ADD_BOOK = gql`
             author: $author
             genres: $genres
         ) {
-            author
+            author {
+                name
+            }
             title
             published
             id
@@ -53,6 +55,14 @@ export const EDIT_AUTHOR = gql`
             born
             id
             name
+        }
+    }
+`;
+
+export const LOGIN = gql`
+    mutation ($username: String!, $password: String!) {
+        login(username: $username, password: $password) {
+            value
         }
     }
 `;

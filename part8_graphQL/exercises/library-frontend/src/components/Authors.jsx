@@ -52,39 +52,49 @@ const Authors = (props) => {
                 </tbody>
             </table>
 
-            <h2>Set birthyear</h2>
-            <form onSubmit={handleEditAuthor}>
-                <label>
-                    name
-                    <select
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                    >
-                        <option value="" disabled>
-                            --Select author--
-                        </option>
-                        {authors.map((author) => {
-                            return (
-                                <option value={author.name} key={author.id}>
-                                    {author.name}
+            {props.token && (
+                <>
+                    <h2>Set birthyear</h2>
+                    <form onSubmit={handleEditAuthor}>
+                        <label>
+                            name
+                            <select
+                                value={name}
+                                onChange={(event) =>
+                                    setName(event.target.value)
+                                }
+                            >
+                                <option value="" disabled>
+                                    --Select author--
                                 </option>
-                            );
-                        })}
-                        <option value="someOption">Some option</option>
-                    </select>
-                </label>
-                <br />
-                <label>
-                    born
-                    <input
-                        type="text"
-                        value={born}
-                        onChange={(event) => setBorn(event.target.value)}
-                    />
-                </label>
-                <br />
-                <button>update author</button>
-            </form>
+                                {authors.map((author) => {
+                                    return (
+                                        <option
+                                            value={author.name}
+                                            key={author.id}
+                                        >
+                                            {author.name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </label>
+                        <br />
+                        <label>
+                            born
+                            <input
+                                type="text"
+                                value={born}
+                                onChange={(event) =>
+                                    setBorn(event.target.value)
+                                }
+                            />
+                        </label>
+                        <br />
+                        <button>update author</button>
+                    </form>
+                </>
+            )}
         </div>
     );
 };
