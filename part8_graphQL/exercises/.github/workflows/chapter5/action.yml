@@ -14,12 +14,31 @@ runs:
           working-directory: part8_graphQL/exercises/library-backend
           run: npm ci
 
-        - name: Install test dependencies
+        - name: Install library-frontend dependencies
+          shell: bash
+          working-directory: part8_graphQL/exercises/library-frontend
+          run: npm ci
+
+        - name: Install E2E test dependencies
           shell: bash
           working-directory: part8_graphQL/exercises/tests-chapter5
           run: npm ci
 
-        - name: Run tests
+        - name: Install Playwright browsers
           shell: bash
           working-directory: part8_graphQL/exercises/tests-chapter5
-          run: npm test
+          run: npx playwright install chromium --with-deps
+
+        - name: Run E2E tests
+          shell: bash
+          working-directory: part8_graphQL/exercises/tests-chapter5
+          run: npx playwright test
+
+        - name: Upload test report
+          shell: bash
+          uses: actions/upload-artifact@v4
+          if: ${{ !cancelled() }}
+          with:
+              name: playwright-report
+              path: part8_graphQL/exercises/tests-chapter5/playwright-report/
+              retention-days: 7
