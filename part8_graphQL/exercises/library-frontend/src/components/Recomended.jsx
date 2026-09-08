@@ -4,11 +4,11 @@ import { ALL_BOOKS, ME } from '../queries';
 const Recomended = (props) => {
     const resultUser = useQuery(ME);
     const result = useQuery(ALL_BOOKS, {
-        skip: !resultUser.data,
+        skip: !resultUser.data?.me?.favoriteGenre,
         variables: { genre: resultUser.data?.me?.favoriteGenre },
     });
 
-    if (result.loading || resultUser.loading) {
+    if (result.loading || resultUser.loading || !result.data) {
         return null;
     }
 
@@ -21,7 +21,7 @@ const Recomended = (props) => {
 
     return (
         <div>
-            <h2>books</h2>
+            <h1>recommendations</h1>
 
             <p>
                 books in your favorite genre <b>{user.favoriteGenre}</b>

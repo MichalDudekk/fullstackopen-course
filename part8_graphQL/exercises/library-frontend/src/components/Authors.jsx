@@ -60,6 +60,7 @@ const Authors = (props) => {
                             name
                             <select
                                 value={name}
+                                name="name"
                                 onChange={(event) =>
                                     setName(event.target.value)
                                 }

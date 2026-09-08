@@ -36,7 +36,7 @@ const App = () => {
                     <button onClick={() => setPage('add')}>add book</button>
                 )}
                 {token && (
-                    <button onClick={() => setPage('recomended')}>
+                    <button onClick={() => setPage('recommend')}>
                         recommend
                     </button>
                 )}
@@ -56,12 +56,13 @@ const App = () => {
 
             <NewBook show={page === 'add'} />
 
-            <Recomended show={page === 'recomended'} />
+            <Recomended show={page === 'recommend'} />
 
             <Login
                 show={page === 'login'}
                 setToken={setToken}
                 setError={notify}
+                afterLogin={() => setPage('authors')}
             />
         </div>
     );
