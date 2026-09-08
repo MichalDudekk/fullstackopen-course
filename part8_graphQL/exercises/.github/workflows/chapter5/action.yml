@@ -1,5 +1,5 @@
 name: 'Test Chapter 5'
-description: 'Runs backend tests for library'
+description: 'Runs E2E tests for library'
 
 runs:
     using: 'composite'
@@ -35,7 +35,6 @@ runs:
           run: npx playwright test
 
         - name: Upload test report
-          shell: bash
           uses: actions/upload-artifact@v4
           if: ${{ !cancelled() }}
           with:
