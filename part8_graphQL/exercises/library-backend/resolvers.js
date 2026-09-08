@@ -74,7 +74,11 @@ const resolvers = {
                 authorToSave = await Author.findOneAndUpdate(
                     { name: author },
                     { $setOnInsert: { name: author } },
-                    { new: true, upsert: true, runValidators: true },
+                    {
+                        returnDocument: 'after',
+                        upsert: true,
+                        runValidators: true,
+                    },
                 );
             } catch (error) {
                 // rzadkie dwa inserty jednocześnie - 11000 to duplicate name

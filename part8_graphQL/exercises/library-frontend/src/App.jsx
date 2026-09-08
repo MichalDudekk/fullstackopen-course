@@ -37,7 +37,7 @@ const App = () => {
                 )}
                 {token && (
                     <button onClick={() => setPage('recomended')}>
-                        recomended
+                        recommend
                     </button>
                 )}
                 {!token && (
