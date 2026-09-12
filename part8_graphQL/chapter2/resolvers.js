@@ -1,34 +1,15 @@
 const { GraphQLError } = require('graphql');
 const jwt = require('jsonwebtoken');
+const { PubSub } = require('graphql-subscriptions');
+
 const Person = require('./models/person');
 const User = require('./models/user');
 
-let persons = [
-    {
-        name: 'Arto Hellas',
-        phone: '040-123543',
-        street: 'Tapiolankatu 5 A',
-        city: 'Espoo',
-        id: '3d594650-3436-11e9-bc57-8b80ba54c431',
-    },
-    {
-        name: 'Matti Luukkainen',
-        phone: '040-432342',
-        street: 'Malminkaari 10 A',
-        city: 'Helsinki',
-        id: '3d599470-3436-11e9-bc57-8b80ba54c431',
-    },
-    {
-        name: 'Venla Ruuska',
-        street: 'Nallemäentie 22 C',
-        city: 'Helsinki',
-        id: '3d599471-3436-11e9-bc57-8b80ba54c431',
-    },
-];
+const pubsub = new PubSub();
 
 const resolvers = {
     Query: {
-        personCount: () => persons.length,
+        personCount: async () => Person.collection.countDocuments(),
         allPersons: async (root, args) => {
             if (!args.phone) {
                 return Person.find({});
@@ -90,6 +71,8 @@ const resolvers = {
                     },
                 );
             }
+
+            pubsub.publish('PERSON_ADDED', { personAdded: person });
 
             return person;
         },
@@ -166,16 +149,6 @@ const resolvers = {
                     .includes(person._id.toString());
 
             const person = await Person.findOne({ name: args.name });
-
-            if (!person) {
-                throw new GraphQLError("The name didn't found", {
-                    extensions: {
-                        code: 'BAD_USER_INPUT',
-                        invalidArgs: args.name,
-                    },
-                });
-            }
-
             if (nonFriendAlready(person)) {
                 currentUser.friends = currentUser.friends.concat(person);
             }
@@ -183,6 +156,11 @@ const resolvers = {
             await currentUser.save();
 
             return currentUser;
+        },
+    },
+    Subscription: {
+        personAdded: {
+            subscribe: () => pubsub.asyncIterableIterator('PERSON_ADDED'),
         },
     },
 };
