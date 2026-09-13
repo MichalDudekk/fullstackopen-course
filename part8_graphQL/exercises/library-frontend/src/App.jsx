@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useApolloClient } from '@apollo/client/react';
+import { useApolloClient, useSubscription } from '@apollo/client/react';
+import { ADD_BOOK, BOOK_ADDED } from './queries';
 
 import Authors from './components/Authors';
 import Books from './components/Books';
@@ -16,15 +17,21 @@ const App = () => {
 
     const client = useApolloClient();
 
+    const notify = (message) => {
+        setNotification(message);
+        setTimeout(() => setNotification(''), 5000);
+    };
+
+    useSubscription(BOOK_ADDED, {
+        onData: ({ data }) => {
+            notify(`New book ${data.data.bookAdded.title}`);
+        },
+    });
+
     const onLogout = () => {
         setToken(null);
         localStorage.clear();
         client.resetStore();
-    };
-
-    const notify = (message) => {
-        setNotification(message);
-        setTimeout(() => setNotification(''), 5000);
     };
 
     return (
