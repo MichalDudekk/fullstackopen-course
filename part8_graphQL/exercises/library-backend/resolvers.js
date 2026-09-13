@@ -42,7 +42,7 @@ const resolvers = {
             return uniqueGenres;
         },
         allAuthors: async () => {
-            return await Author.find({});
+            return await Author.find({}).populate('books');
         },
         me: (root, args, context) => {
             return context.currentUser;
@@ -221,6 +221,8 @@ const resolvers = {
         bookCount: async (root) => {
             const books = await Book.find({ author: root });
             return books.length;
+            // console.log(root);
+            // return root.books.length;
         },
     },
     Subscription: {
