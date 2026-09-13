@@ -1,0 +1,25 @@
+name: 'Test Chapter 4'
+description: 'Runs backend tests for library'
+
+runs:
+    using: 'composite'
+    steps:
+        - name: Setup Node.js
+          uses: actions/setup-node@v6
+          with:
+              node-version: 24
+
+        - name: Install library-backend dependencies
+          shell: bash
+          working-directory: part8_graphQL/exercises/library-backend
+          run: npm ci
+
+        - name: Install test dependencies
+          shell: bash
+          working-directory: part8_graphQL/exercises/tests-chapter4
+          run: npm ci
+
+        - name: Run tests
+          shell: bash
+          working-directory: part8_graphQL/exercises/tests-chapter4
+          run: npm test
