@@ -1,6 +1,11 @@
 import { useState } from 'react';
-import { useQuery, useApolloClient } from '@apollo/client/react';
-import { ALL_PERSONS } from './queries';
+import {
+    useQuery,
+    useApolloClient,
+    useSubscription,
+} from '@apollo/client/react';
+import { ALL_PERSONS, PERSON_ADDED } from './queries';
+import { addPersonToCache } from './utils/apolloCache';
 
 import LoginForm from './components/LoginForm';
 
@@ -17,6 +22,14 @@ const App = () => {
 
     const result = useQuery(ALL_PERSONS);
     const client = useApolloClient();
+
+    useSubscription(PERSON_ADDED, {
+        onData: ({ data }) => {
+            const addedPerson = data.data.personAdded;
+            notify(`${addedPerson.name} added`);
+            addPersonToCache(client.cache, addedPerson);
+        },
+    });
 
     if (result.loading) {
         return <div>loading...</div>;
