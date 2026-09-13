@@ -5,11 +5,11 @@ import { ADD_BOOK, ALL_BOOKS } from '../queries';
 // import { addBookToCache } from '../utils/apolloCache';
 
 const NewBook = (props) => {
-    const [title, setTitle] = useState('Testbook');
-    const [author, setAuthor] = useState('Scroge');
-    const [published, setPublished] = useState('1972');
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [published, setPublished] = useState('');
     const [genre, setGenre] = useState('');
-    const [genres, setGenres] = useState(['fantasy']);
+    const [genres, setGenres] = useState([]);
 
     const [addBook] = useMutation(ADD_BOOK, {
         refetchQueries: [

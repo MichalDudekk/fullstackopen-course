@@ -15,13 +15,29 @@ const updateCache = (allBooks, bookToAdd) => {
 export const addBookToCache = (cache, bookToAdd) => {
     cache.updateQuery(
         { query: ALL_BOOKS, variables: { genre: null } },
-        ({ allBooks }) => updateCache(allBooks, bookToAdd),
+        (prevCache) => {
+            if (!prevCache) {
+                console.log(prevCache);
+                return prevCache;
+            }
+
+            const { allBooks } = prevCache;
+            updateCache(allBooks, bookToAdd);
+        },
     );
 
     bookToAdd.genres.forEach((genre) => {
         cache.updateQuery(
             { query: ALL_BOOKS, variables: { genre } },
-            ({ allBooks }) => updateCache(allBooks, bookToAdd),
+            (prevCache) => {
+                if (!prevCache) {
+                    console.log(prevCache);
+                    return prevCache;
+                }
+
+                const { allBooks } = prevCache;
+                updateCache(allBooks, bookToAdd);
+            },
         );
     });
 };
